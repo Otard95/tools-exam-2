@@ -26,7 +26,7 @@
                 <TextBox Height="23" TextWrapping="Wrap" Margin="0,2" Width="124" Text="{Binding FileSelect}"/>
                 <Button Content="Browse" Width="61" Command="{Binding OpenFileDialogCommand}" Margin="0,2"/>
             </StackPanel>
-            <Button Content="Draw Image" Height="47"/>
+            <Button Content="Draw Image" Height="47" Command="{Binding DrawImageCommand}"/>
         </StackPanel>
     </Grid>
 </Page>

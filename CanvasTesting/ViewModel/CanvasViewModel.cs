@@ -42,7 +42,7 @@ namespace CanvasTesting.ViewModel {
             RandomizeBackground = new RelayCommand(SetRandomBackground, () => true);
             DrawRectCommand = new RelayCommand(DrawRect, () => true);
             OpenFileDialogCommand = new RelayCommand(OpenFileDialog, () => true);
-            DrawImageCommand = new RelayCommand(DrawBitmap, () => !String.IsNullOrEmpty(FileSelect));
+            DrawImageCommand = new RelayCommand(DrawBitmap, () => true);
 
             SetRandomBackground();
 
