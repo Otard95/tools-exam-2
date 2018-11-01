@@ -12,6 +12,8 @@
     </Page.DataContext>
 
     <Grid>
-        
+
+        <Canvas x:Name="CanvasElement" />
+
     </Grid>
 </Page>

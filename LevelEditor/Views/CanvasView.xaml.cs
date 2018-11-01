@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LevelEditor.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,14 @@ namespace LevelEditor.Views
     /// </summary>
     public partial class CanvasView : Page
     {
+
+        public CanvasViewModel ViewModel => (CanvasViewModel) DataContext;
+
         public CanvasView()
         {
             InitializeComponent();
+            ViewModel.SetCanvas(CanvasElement);
         }
+        
     }
 }
