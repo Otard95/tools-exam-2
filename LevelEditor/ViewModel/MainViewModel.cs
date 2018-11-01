@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using LevelEditor.Model;
 
 namespace LevelEditor.ViewModel {
     /// <summary>
