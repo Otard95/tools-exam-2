@@ -13,7 +13,9 @@
 
     <Grid>
 
-        <Canvas x:Name="CanvasElement" />
+        <Canvas x:Name="CanvasElement" MouseDown="CanvasElement_MouseDown" Background="White">
+            
+        </Canvas>
 
     </Grid>
 </Page>
