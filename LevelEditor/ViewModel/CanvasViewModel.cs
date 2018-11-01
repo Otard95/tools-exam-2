@@ -10,12 +10,10 @@ namespace LevelEditor.ViewModel
     public class CanvasViewModel
     {
 
-        private Canvas _canvas;
+        public Canvas Canvas { get; set; }
 
-        public void SetCanvas(Canvas canvas) {
-
-            _canvas = canvas;
-
+        public CanvasViewModel() {
+            
         }
         
     }

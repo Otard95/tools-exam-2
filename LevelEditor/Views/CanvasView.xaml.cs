@@ -27,7 +27,7 @@ namespace LevelEditor.Views
         public CanvasView()
         {
             InitializeComponent();
-            ViewModel.SetCanvas(CanvasElement);
+            ViewModel.Canvas = CanvasElement;
         }
         
     }
