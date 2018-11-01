@@ -28,6 +28,7 @@ namespace LevelEditor.Views
         {
             InitializeComponent();
             ViewModel.Canvas = CanvasElement;
+            // I can has push?
         }
         
     }
