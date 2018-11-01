@@ -26,6 +26,7 @@ namespace LevelEditor.ViewModel {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<CanvasViewModel>();
         }
 
         /// <summary>
@@ -40,7 +41,11 @@ namespace LevelEditor.ViewModel {
             }
         }
 
-
+        public CanvasViewModel Canvas {
+            get {
+                return ServiceLocator.Current.GetInstance<CanvasViewModel>();
+            }
+        }
 
         /// <summary>
         /// Cleans up all the resources.
