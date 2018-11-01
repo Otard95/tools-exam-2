@@ -20,7 +20,7 @@
 
     <Grid x:Name="LayoutRoot">
 
-       
+        <Frame Source="/LevelEditor;Component/Views/CanvasView.xaml" NavigationUIVisibility="Hidden" />
 
     </Grid>
 </Window>
