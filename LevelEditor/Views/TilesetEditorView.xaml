@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LevelEditor.Views"
       mc:Ignorable="d" 
-      d:DesignHeight="800" d:DesignWidth="1000"
+      d:DesignHeight="820" d:DesignWidth="1020"
       Title="TilesetEditorView">
 
     <Page.DataContext>
@@ -13,15 +13,23 @@
     </Page.DataContext>
 
     <Grid Margin="2,0,-2,0">
-        <Canvas x:Name="CanvasElement" HorizontalAlignment="Left" Height="800" VerticalAlignment="Top" Width="800">
+        <Canvas x:Name="CanvasElement" HorizontalAlignment="Left" Height="800" VerticalAlignment="Top" Width="800" Margin="10,10,0,0">
             <Image Source="{Binding Tileset, Mode=OneWay}"></Image>
         </Canvas>
-        <StackPanel HorizontalAlignment="Right" Height="800" VerticalAlignment="Top" Width="200" >
-            <StackPanel Orientation="Horizontal" Height="28" Margin="0,20,0,0">
-                <Button Content="Open File" Width="200" Command="{Binding BrowseCommand}"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Top" Height="800" Width="200" Margin="0,10,10,0" >
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Button Content="Open File" Width="190" Margin="0,20,0,0" Command="{Binding BrowseCommand}" Height="30"/>
+                <Label Content="Slice mode" Margin="0,20,0,0"/>
+                <ComboBox HorizontalAlignment="Center" Width="190" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,20,0,0" >
+                    <Label Content="Horizontal"/>
+                    <TextBox HorizontalAlignment="Right" Height="22" TextWrapping="Wrap" Text="{Binding HorizontalSlize}" Width="125"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,5,0,0" >
+                    <Label Content="Vertical     "/>
+                    <TextBox HorizontalAlignment="Right" Height="22" TextWrapping="Wrap" Text="{Binding VerticalSlize}" Width="125"/>
+                </StackPanel>
             </StackPanel>
-            <Label Content="Slice mode" Margin="0,20,0,0"/>
-            <ComboBox SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
-        </StackPanel>
+        </Border>
     </Grid>
 </Page>

@@ -31,6 +31,8 @@ namespace LevelEditor.ViewModel {
         public BitmapSource Tileset { get; private set; }
         public string[] SliceModeChoices { get { return Enum.GetNames(typeof(SliceMode)); } }
         public int SelectedSliceMode { get => (int) _slice_mode; set => _slice_mode = (SliceMode) value; }
+        public int HorizontalSlize { get; set; }
+        public int VerticalSlize { get; set; }
 
         #endregion
 
