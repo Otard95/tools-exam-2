@@ -78,6 +78,8 @@
     <Compile Include="Models\TileKey.cs" />
     <Compile Include="Domain\Exceptions\TileSetDeserializeException.cs" />
     <Compile Include="Domain\Exceptions\TileLoadException.cs" />
+    <Compile Include="Domain\Exceptions\TileMapLogicException.cs" />
+    <Compile Include="Services\TileMapService.cs" />
     <Compile Include="Services\TileService.cs" />
     <Compile Include="Domain\TileType.cs" />
     <Compile Include="Models\TileSet.cs" />
@@ -136,6 +138,9 @@
     </None>
     <AppDesigner Include="Properties\" />
     <Content Include="Tilesets\DefaultTileset.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TileMaps\DefaultTilemap.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

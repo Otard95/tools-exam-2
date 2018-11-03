@@ -1,26 +1,35 @@
 {
-  "dimension":  128, 
-  "tileSets": [
+  "Dimension": 128,
+  "TileSets": [
     {
-      "id": 1,
-      "name": "DefaultTileset",
-      "dimension": 128,
-      "tileKeys": [
+      "Id": 1,
+      "Name": "DefaultTileset",
+      "Dimension": 128,
+      "TileKeys": [
         {
-          "id": 1,
-          "type": 1,
-          "contentPath": "./Images/DefaultTile.png"
+          "Type": 1,
+          "Id": 1,
+          "ContentPath": "./Images/DefaultTile.png"
         }
       ]
     }
   ],
-  "tileSetMap": [
-    { "1": 1 }
+  "TileSetMap": {
+    "1": 1
+  },
+  "CoordinateMap": [
+    {
+      "X": 0,
+      "Y": 0
+    }
   ],
-  "tilePlacements": [
-    [
-      [[1,1], [1,1]]
-    ]
-  ]
-
+  "TileMappings": [
+    {
+      "TileSetMapId": 1,
+      "TileId": 1
+    }
+  ],
+  "TilePlacements": {
+    "0": 0
+  }
 }
