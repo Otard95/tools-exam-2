@@ -86,9 +86,13 @@
     <Compile Include="Models\TileSetKey.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\TilesetEditorViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\CanvasView.xaml.cs">
       <DependentUpon>CanvasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TilesetEditorView.xaml.cs">
+      <DependentUpon>TilesetEditorView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -107,6 +111,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\CanvasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TilesetEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -135,6 +143,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Content Include="Images\NoTilesetImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Tilesets\DefaultTileset.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

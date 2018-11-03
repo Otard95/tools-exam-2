@@ -27,6 +27,7 @@ namespace LevelEditor.ViewModel {
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<CanvasViewModel>();
+            SimpleIoc.Default.Register<TilesetEditorViewModel>();
         }
 
         /// <summary>
@@ -44,6 +45,12 @@ namespace LevelEditor.ViewModel {
         public CanvasViewModel Canvas {
             get {
                 return ServiceLocator.Current.GetInstance<CanvasViewModel>();
+            }
+        }
+
+        public TilesetEditorViewModel TilesetEditor {
+            get {
+                return ServiceLocator.Current.GetInstance<TilesetEditorViewModel>();
             }
         }
 
