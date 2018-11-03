@@ -1,0 +1,26 @@
+{
+  "dimension":  128, 
+  "tileSets": [
+    {
+      "id": 1,
+      "name": "DefaultTileset",
+      "dimension": 128,
+      "tileKeys": [
+        {
+          "id": 1,
+          "type": 1,
+          "contentPath": "./Images/DefaultTile.png"
+        }
+      ]
+    }
+  ],
+  "tileSetMap": [
+    { "1": 1 }
+  ],
+  "tilePlacements": [
+    [
+      [[1,1], [1,1]]
+    ]
+  ]
+
+}

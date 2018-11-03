@@ -39,9 +39,18 @@ namespace LevelEditor.Views
                 Source = tileSource
             };
 
+            var tile2 = new Image {
+                Height = tileSet.Dimension,
+                Width = tileSet.Dimension,
+                Source = tileSource
+            };
+
             Canvas.SetTop(tile, 128);
             Canvas.SetLeft(tile, 128);
+            Canvas.SetTop(tile2, 256);
+            Canvas.SetLeft(tile2, 256);
             CanvasElement.Children.Add(tile);
+            CanvasElement.Children.Add(tile2);
 
         }
 
