@@ -20,6 +20,8 @@
             <StackPanel Orientation="Horizontal" Height="28" Margin="0,20,0,0">
                 <Button Content="Open File" Width="200" Command="{Binding BrowseCommand}"/>
             </StackPanel>
+            <Label Content="Slice mode" Margin="0,20,0,0"/>
+            <ComboBox SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
         </StackPanel>
     </Grid>
 </Page>
