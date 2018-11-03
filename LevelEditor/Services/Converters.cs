@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace LevelEditor.Util {
+namespace LevelEditor.Services {
     public static class Converters {
         
         public static BitmapSource BitmapToBitmapSource (Bitmap source) {
@@ -16,6 +16,7 @@ namespace LevelEditor.Util {
                             BitmapSizeOptions.FromEmptyOptions());
         }
 
+        // Michael: We should probably not use enums and string. This can be replaced by static classes with const strings or static strings. 
         public static List<string> Enum2StringList<EnumType> (List<EnumType> list) {
             List<string> output = new List<string>();
             foreach (EnumType e in list) {

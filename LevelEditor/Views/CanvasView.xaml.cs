@@ -1,21 +1,8 @@
-﻿using LevelEditor.Factories;
-using LevelEditor.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
+﻿using LevelEditor.ViewModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using LevelEditor.Services;
 using Image = System.Windows.Controls.Image;
 
 namespace LevelEditor.Views
@@ -39,18 +26,21 @@ namespace LevelEditor.Views
             // CanvasElement.Background = new SolidColorBrush(Color.FromRgb(20, 20, 20));
         }
 
-        private void GenerateTiles() {
+        private void GenerateTiles()
+        {
 
-            TileFactory.Instance.LoadTileSet();
+            var tileSet = TileService.Instance.GetTileset("./TileSets/DefaultTileset");
+            var tileSource = tileSet[tileSet.TileKeys.First()];
 
-            Image tile = new Image();
-            tile.Height = 128;
-            tile.Width = 128;
+            var tile = new Image
+            {
+                Height = tileSet.Dimension,
+                Width = tileSet.Dimension,
+                Source = tileSource
+            };
+
             Canvas.SetTop(tile, 128);
             Canvas.SetLeft(tile, 128);
-            var bmp = new Bitmap("./Images/DefaultTile.png");
-            tile.Source = Util.Converters.BitmapToBitmapSource(bmp);
-
             CanvasElement.Children.Add(tile);
 
         }

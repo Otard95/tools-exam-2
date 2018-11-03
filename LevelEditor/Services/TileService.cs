@@ -1,90 +1,26 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using LevelEditor.Tools;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using LevelEditor.Models;
 
 namespace LevelEditor.Services {
-    public class TileService
-    {
-        private TileService _instance;
+    public class TileService {
+        private static TileService _instance;
 
-        public TileService Instance => _instance ?? (_instance = new TileService());
-        public Dictionary<string, TileSet> Tiles { get; set; }
+        public static TileService Instance => _instance ?? (_instance = new TileService());
+        public Dictionary<string, TileSet> Factory { get; set; }
 
-        public void LoadTilesets(string path)
+        private TileService()
         {
-            Tiles.Add(path, Json.LoadGet<TileSet>(path));
+            Factory = new Dictionary<string, TileSet>();
         }
 
-    }
-
-    public class TileSet
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public HashSet<TileKey> TileKeys { get; set; }
-
-        [OnDeserialized]
-        internal void OnDeserialized(StreamingContext context)
+        public TileSet GetTileset(string path)
         {
-            foreach (var tileKey in TileKeys)
-            {
-                // TileSetDictionary.Add(TileKey, ); Load files here
-            }
-        }
+            if (Factory.TryGetValue(path, out var tileSet))
+                return tileSet;
 
-        [JsonIgnore]
-        private Dictionary<TileKey, ImageSource> TileSetDictionary { get; set; }
-
-        [JsonIgnore]
-        public ImageSource this[TileKey key] => TileSetDictionary.TryGetValue(key, out var img)
-            ? img
-            : throw new TileLoadException($"Could not load tile: {key}");
-    }
-
-    public class TileLoadException : Exception
-    {
-        public TileLoadException(string s) : base(s)
-        {
-
-        }
-    }
-
-    public class TileKey : IEquatable<TileKey>
-    {
-        public int Id { get; set; }
-        public string ContentPath { get; set; }
-
-        public bool Equals(TileKey other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Id == other.Id;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((TileKey) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id;
-        }
-
-        public override string ToString()
-        {
-            return $"[{Id}] {ContentPath ?? "NULL"}";
+            tileSet = JsonService.LoadGet<TileSet>(path);
+            Factory.Add(path, tileSet);
+            return tileSet;
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-namespace LevelEditor.Tools {
-    public static class Json {
+namespace LevelEditor.Services {
+    public static class JsonService {
         /// <summary>
-        /// Serializes content to Json and saves to .json file
+        /// Serializes content to JsonService and saves to .json file
         /// </summary>
         /// <typeparam name="T">The type of the object to be serialized</typeparam>
         /// <param name="content">Content to save</param>
@@ -38,7 +39,7 @@ namespace LevelEditor.Tools {
 
 
         /// <summary>
-        /// Loads a Json-formatted file and tries to serialize it to given type
+        /// Loads a JsonService-formatted file and tries to serialize it to given type
         /// </summary>
         /// <typeparam name="T">Type to be serialized to</typeparam>
         /// <param name="content">Pointer to object where loaded content will be stored</param>
@@ -60,7 +61,7 @@ namespace LevelEditor.Tools {
         }
 
         /// <summary>
-        /// Loads a Json-formatted file and tries to serialize it to given type, and returns the result as the serialized object.
+        /// Loads a JsonService-formatted file and tries to serialize it to given type, and returns the result as the serialized object.
         /// Will throw if there are any problems with the file or serialization
         /// </summary>
         /// <typeparam name="T">Type to be serialized to</typeparam>
@@ -71,7 +72,10 @@ namespace LevelEditor.Tools {
         public static T LoadGet<T>(string filename, string folder = "", bool fullPathProvided = false) {
             var rootPath = Directory.GetCurrentDirectory();
             var json = File.ReadAllText(fullPathProvided ? filename : $"{rootPath}/{(string.IsNullOrEmpty(folder) ? $"{folder}/" : "")}{filename}.json");
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
         }
     }
 }
