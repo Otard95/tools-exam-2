@@ -3,6 +3,7 @@ using LevelEditor.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Image = System.Windows.Controls.Image;
 
 namespace LevelEditor.Views
 {
@@ -46,6 +48,8 @@ namespace LevelEditor.Views
             tile.Width = 128;
             Canvas.SetTop(tile, 128);
             Canvas.SetLeft(tile, 128);
+            var bmp = new Bitmap("./Images/DefaultTile.png");
+            tile.Source = Util.Converters.BitmapToBitmapSource(bmp);
 
             CanvasElement.Children.Add(tile);
 
