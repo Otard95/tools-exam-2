@@ -36,23 +36,11 @@ namespace LevelEditor.ViewModel {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public MainViewModel Main {
-            get {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
+        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
-        public CanvasViewModel Canvas {
-            get {
-                return ServiceLocator.Current.GetInstance<CanvasViewModel>();
-            }
-        }
+        public CanvasViewModel Canvas => ServiceLocator.Current.GetInstance<CanvasViewModel>();
 
-        public TilesetEditorViewModel TilesetEditor {
-            get {
-                return ServiceLocator.Current.GetInstance<TilesetEditorViewModel>();
-            }
-        }
+        public TilesetEditorViewModel TilesetEditor => ServiceLocator.Current.GetInstance<TilesetEditorViewModel>();
 
         /// <summary>
         /// Cleans up all the resources.

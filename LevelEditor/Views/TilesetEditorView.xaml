@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:LevelEditor.Views"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1000"
-      Title="TilesetEditorView">
+      Title="TileSetEditorView">
 
     <Page.DataContext>
         <Binding Path="TilesetEditor" Source="{StaticResource Locator}" />
@@ -14,7 +14,7 @@
 
     <Grid Margin="2,0,-2,0">
         <Canvas x:Name="CanvasElement" HorizontalAlignment="Left" Height="800" VerticalAlignment="Top" Width="800">
-            <Image Source="{Binding Tileset, Mode=OneWay}"></Image>
+            <Image Source="{Binding TileSet, Mode=OneWay}"></Image>
         </Canvas>
         <StackPanel HorizontalAlignment="Right" Height="800" VerticalAlignment="Top" Width="200" >
             <StackPanel Orientation="Horizontal" Height="28" Margin="0,20,0,0">
