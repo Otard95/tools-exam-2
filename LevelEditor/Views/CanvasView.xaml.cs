@@ -5,6 +5,7 @@ using System.Linq;
 using System.Management.Instrumentation;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Effects;
 using LevelEditor.Models;
 using LevelEditor.Services;
 using Newtonsoft.Json;
@@ -27,38 +28,49 @@ namespace LevelEditor.Views
             GenerateTiles();
         }
 
-        private void CanvasElement_MouseDown (object sender, MouseButtonEventArgs e) {
-            // CanvasElement.Background = new SolidColorBrush(Color.FromRgb(20, 20, 20));
+        private void CanvasElement_MouseDown (object sender, MouseButtonEventArgs e)
+        {
+            var position = e.GetPosition(sender as Canvas);
+            var dimension = ViewModel.Map.Dimension;
+            var x = (int)(position.X / dimension);
+            var y = (int)(position.Y / dimension);
+            var tileSet = ViewModel.Map.TileSets.First();
+            var tileKey = tileSet.TileKeys.First();
+            ViewModel.Map.PlaceTile(x, y, tileSet, tileKey);
+            Render();
         }
 
         private void GenerateTiles()
         {
             //var map = TileMapService.Instance.LoadMap("./TileMaps/DefaultTilemap");
-
+            ViewModel.Map = new TileMap(128);
             var tileSetToUse = TileService.Instance.GetTileset("./TileSets/DefaultTileset");
-            var map = new TileMap(128);
-            var tileKeyToPlace = tileSetToUse.TileKeys.First();
-            map.PlaceTile(0, 0, tileSetToUse, tileKeyToPlace);
-            map.PlaceTile(1, 1, tileSetToUse, tileKeyToPlace);
-            map.PlaceTile(2, 2, tileSetToUse, tileKeyToPlace);
-            map.PlaceTile(3, 3, tileSetToUse, tileKeyToPlace);
+            var tileToPlace = tileSetToUse.TileKeys.First();
+            ViewModel.Map.PlaceTile(0, 0, tileSetToUse, tileToPlace);
+            ViewModel.Map.PlaceTile(1, 1, tileSetToUse, tileToPlace);
+            ViewModel.Map.PlaceTile(2, 2, tileSetToUse, tileToPlace);
+            ViewModel.Map.PlaceTile(3, 3, tileSetToUse, tileToPlace);
+            Render();
 
-            foreach (var coordinate in map.CoordinateMap)
-            {
-                var tileMapping = map.GetTileMapping(coordinate.X, coordinate.Y);
-                var tileSet = map.GetTileSetFromMapping(tileMapping);
-                var tileKey = map.GetTileKey(tileMapping, tileSet);
-                var tileSource = tileSet[tileKey];
+        }
+
+        private void Render()
+        {
+            CanvasElement.Children.Clear();
+            foreach (var coordinate in ViewModel.Map.CoordinateMap) {
+                var tileMapping = ViewModel.Map.GetTileMapping(coordinate.X, coordinate.Y);
+                var tileSet = ViewModel.Map.GetTileSetFromMapping(tileMapping);
+                var tileKey = ViewModel.Map.GetTileKey(tileMapping, tileSet);
+                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath);
                 var tile = new Image {
                     Height = tileSet.Dimension,
                     Width = tileSet.Dimension,
                     Source = tileSource
                 };
-                Canvas.SetTop(tile, 128*coordinate.Y);
-                Canvas.SetLeft(tile, 128*coordinate.X);
+                Canvas.SetTop(tile, tileSet.Dimension * coordinate.Y);
+                Canvas.SetLeft(tile, tileSet.Dimension * coordinate.X);
                 CanvasElement.Children.Add(tile);
             }
         }
-
     }
 }
