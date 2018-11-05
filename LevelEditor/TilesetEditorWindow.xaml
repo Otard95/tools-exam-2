@@ -1,0 +1,31 @@
+﻿<Window x:Class="LevelEditor.TilesetEditorWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LevelEditor.Views"
+      mc:Ignorable="d"
+      Title="Tileset Editor" Width="832" Height="900">
+
+    <Window.DataContext>
+        <Binding Path="TilesetEditor" Source="{StaticResource Locator}" />
+    </Window.DataContext>
+
+    <Grid Margin="2,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Canvas x:Name="CanvasElement" HorizontalAlignment="Left" Height="800" VerticalAlignment="Bottom" Width="800" Margin="10,0,0,10">
+            <Image Source="{Binding Tileset, Mode=OneWay}"></Image>
+        </Canvas>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Top" Height="34" Width="800" Margin="0,10,11,0" >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="Open File" Width="190" Command="{Binding BrowseCommand}" Height="30"/>
+                <Label Content="Slice mode" Margin="20,0,0,0"/>
+                <ComboBox HorizontalAlignment="Center" Width="190" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
+                <Label Content="Size" Margin="20,0,0,0"/>
+                <TextBox HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding Dimention}" Width="157"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

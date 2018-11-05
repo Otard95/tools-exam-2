@@ -10,13 +10,13 @@ using System.Windows.Media.Imaging;
 
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : INotifyPropertyChanged {
-
+        
         private enum SliceMode {
             CellCount,
             CellSize
         }
 
-        OpenFileDialog _file_dialog;
+        OpenFileDialog FileDialog;
         SliceMode _slice_mode;
         private string WorkingFile { get; set; }
 
@@ -31,14 +31,13 @@ namespace LevelEditor.ViewModel {
         public BitmapSource Tileset { get; private set; }
         public string[] SliceModeChoices { get { return Enum.GetNames(typeof(SliceMode)); } }
         public int SelectedSliceMode { get => (int) _slice_mode; set => _slice_mode = (SliceMode) value; }
-        public int HorizontalSlize { get; set; }
-        public int VerticalSlize { get; set; }
+        public int Dimention { get; set; }
 
         #endregion
 
         public TilesetEditorViewModel () {
-            _file_dialog = new OpenFileDialog();
-            _file_dialog.Filter = "Image File|*.png;*.jpg";
+            FileDialog = new OpenFileDialog();
+            FileDialog.Filter = "Image File|*.png;*.jpg";
 
             BrowseCommand = new RelayCommand(StartBrowse);
             
@@ -48,17 +47,15 @@ namespace LevelEditor.ViewModel {
         }
 
         private void StartBrowse () {
-            if (_file_dialog.ShowDialog() == true) {
-                WorkingFile = _file_dialog.FileName;
+            if (FileDialog.ShowDialog() == true) {
+                WorkingFile = FileDialog.FileName;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorkingFile"));
                 UpdateImageSource();
             }
         }
 
         private void UpdateImageSource () {
-
-            var bmp = new Bitmap(WorkingFile);
-            Tileset = Converters.BitmapToBitmapSource(bmp);
+            Tileset = BitmapService.Instance.GetBitmapSource(WorkingFile);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Tileset"));
 
         } 
