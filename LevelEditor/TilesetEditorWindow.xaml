@@ -22,9 +22,9 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <Button Content="Open File" Width="190" Command="{Binding BrowseCommand}" Height="30"/>
                 <Label Content="Slice mode" Margin="20,0,0,0"/>
-                <ComboBox HorizontalAlignment="Center" Width="190" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
+                <ComboBox HorizontalAlignment="Center" Width="190" Height="20" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
                 <Label Content="Size" Margin="20,0,0,0"/>
-                <TextBox HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding Dimention}" Width="157"/>
+                <TextBox HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding Dimention}" Width="157" Height="20"/>
             </StackPanel>
         </Border>
     </Grid>
