@@ -15,7 +15,7 @@ namespace LevelEditor.ViewModel {
             CellCount,
             CellSize
         }
-
+        
         OpenFileDialog FileDialog;
         SliceMode _slice_mode;
         private string WorkingFile { get; set; }
