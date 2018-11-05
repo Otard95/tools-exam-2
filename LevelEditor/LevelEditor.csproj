@@ -78,10 +78,16 @@
     <Compile Include="Models\TileKey.cs" />
     <Compile Include="Domain\Exceptions\TileSetDeserializeException.cs" />
     <Compile Include="Domain\Exceptions\TileLoadException.cs" />
+    <Compile Include="Domain\Exceptions\TileMapLogicException.cs" />
+    <Compile Include="Domain\Exceptions\BitmapLoadException.cs" />
+    <Compile Include="Services\BitmapService.cs" />
+    <Compile Include="Models\TileMapping.cs" />
+    <Compile Include="Models\TileCoordinate.cs" />
+    <Compile Include="Models\TileMap.cs" />
+    <Compile Include="Services\TileMapService.cs" />
     <Compile Include="Services\TileService.cs" />
     <Compile Include="Domain\TileType.cs" />
     <Compile Include="Models\TileSet.cs" />
-    <Compile Include="Services\Converters.cs" />
     <Compile Include="Services\JsonService.cs" />
     <Compile Include="Models\TileSetKey.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
@@ -147,6 +153,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Tilesets\DefaultTileset.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TileMaps\DefaultTilemap.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

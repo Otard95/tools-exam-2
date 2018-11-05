@@ -1,0 +1,35 @@
+{
+  "Dimension": 128,
+  "TileSets": [
+    {
+      "Id": 1,
+      "Name": "DefaultTileset",
+      "Dimension": 128,
+      "TileKeys": [
+        {
+          "Type": 1,
+          "Id": 1,
+          "ContentPath": "./Images/DefaultTile.png"
+        }
+      ]
+    }
+  ],
+  "TileSetMap": {
+    "1": 1
+  },
+  "CoordinateMap": [
+    {
+      "X": 0,
+      "Y": 0
+    }
+  ],
+  "TileMappings": [
+    {
+      "TileSetMapId": 1,
+      "TileId": 1
+    }
+  ],
+  "TilePlacements": {
+    "0": 0
+  }
+}

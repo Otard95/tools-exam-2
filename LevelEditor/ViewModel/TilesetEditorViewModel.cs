@@ -16,9 +16,9 @@ namespace LevelEditor.ViewModel {
             CellSize
         }
 
-        OpenFileDialog _file_dialog;
         SliceMode _slice_mode;
         private string WorkingFile { get; set; }
+        OpenFileDialog FileDialog;
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -37,8 +37,8 @@ namespace LevelEditor.ViewModel {
         #endregion
 
         public TilesetEditorViewModel () {
-            _file_dialog = new OpenFileDialog();
-            _file_dialog.Filter = "Image File|*.png;*.jpg";
+            FileDialog = new OpenFileDialog();
+            FileDialog.Filter = "Image File|*.png;*.jpg";
 
             BrowseCommand = new RelayCommand(StartBrowse);
             
@@ -48,17 +48,15 @@ namespace LevelEditor.ViewModel {
         }
 
         private void StartBrowse () {
-            if (_file_dialog.ShowDialog() == true) {
-                WorkingFile = _file_dialog.FileName;
+            if (FileDialog.ShowDialog() == true) {
+                WorkingFile = FileDialog.FileName;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorkingFile"));
                 UpdateImageSource();
             }
         }
 
         private void UpdateImageSource () {
-
-            var bmp = new Bitmap(WorkingFile);
-            Tileset = Converters.BitmapToBitmapSource(bmp);
+            Tileset = BitmapService.Instance.GetBitmapSource(WorkingFile);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Tileset"));
 
         } 
