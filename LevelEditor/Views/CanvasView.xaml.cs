@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using LevelEditor.ViewModel;
+﻿using LevelEditor.ViewModel;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Effects;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using LevelEditor.Models;
 using LevelEditor.Services;
-using Newtonsoft.Json;
 using Image = System.Windows.Controls.Image;
 
 namespace LevelEditor.Views
@@ -20,6 +17,10 @@ namespace LevelEditor.Views
     {
 
         public CanvasViewModel ViewModel => (CanvasViewModel) DataContext;
+        private readonly Rectangle _mark = new Rectangle {
+            Fill = new SolidColorBrush(Color.FromArgb(0x22, 0x00, 0x00, 0x00)),
+            IsHitTestVisible = false
+        };
 
         public CanvasView()
         {
@@ -71,6 +72,20 @@ namespace LevelEditor.Views
                 Canvas.SetLeft(tile, tileSet.Dimension * coordinate.X);
                 CanvasElement.Children.Add(tile);
             }
+        }
+
+        private void CanvasElement_MouseMove(object sender, MouseEventArgs e) {
+            var dimension = ViewModel.Map.Dimension;
+
+            _mark.Height = dimension;
+            _mark.Width = dimension;
+            var position = e.GetPosition(sender as Canvas);
+            var x = (int)(position.X / dimension);
+            var y = (int)(position.Y / dimension);
+            Render();
+            Canvas.SetTop(_mark, dimension * y);
+            Canvas.SetLeft(_mark, dimension * x);
+            CanvasElement.Children.Add(_mark);
         }
     }
 }
