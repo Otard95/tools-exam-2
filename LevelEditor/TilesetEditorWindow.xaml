@@ -19,12 +19,13 @@
             <Image Source="{Binding Tileset, Mode=OneWay}"></Image>
         </Canvas>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Top" Height="34" Width="800" Margin="0,10,11,0" >
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1,1,1,1" Width="798">
                 <Button Content="Open File" Width="190" Command="{Binding BrowseCommand}" Height="30"/>
                 <Label Content="Slice mode" Margin="20,0,0,0"/>
                 <ComboBox HorizontalAlignment="Center" Width="190" Height="20" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
                 <Label Content="Size" Margin="20,0,0,0"/>
-                <TextBox HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding Dimention}" Width="157" Height="20"/>
+                <Slider Minimum="4" SmallChange="1" Width="150" VerticalAlignment="Center" Value="{Binding SizeExp}" Maximum="8"/>
+                <TextBox Height="22" TextWrapping="Wrap" Text="{Binding Dimention, Mode=OneWay}" Width="52"/>
             </StackPanel>
         </Border>
     </Grid>

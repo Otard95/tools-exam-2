@@ -12,6 +12,11 @@ namespace LevelEditor {
         public TilesetEditorWindow () {
             InitializeComponent();
             ViewModel.Canvas = CanvasElement;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            
         }
     }
 }

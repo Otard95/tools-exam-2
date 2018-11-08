@@ -3,7 +3,6 @@ using LevelEditor.Services;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -18,7 +17,8 @@ namespace LevelEditor.ViewModel {
         
         OpenFileDialog FileDialog;
         SliceMode _slice_mode;
-        private string WorkingFile { get; set; }
+        string WorkingFile { get; set; }
+        int _sizeExp;
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -31,7 +31,8 @@ namespace LevelEditor.ViewModel {
         public BitmapSource Tileset { get; private set; }
         public string[] SliceModeChoices { get { return Enum.GetNames(typeof(SliceMode)); } }
         public int SelectedSliceMode { get => (int) _slice_mode; set => _slice_mode = (SliceMode) value; }
-        public int Dimention { get; set; }
+        public int SizeExp { get => _sizeExp; set { _sizeExp = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dimention))); } }
+        public int Dimention { get => (int) Math.Pow(2, SizeExp); }
 
         #endregion
 
@@ -40,7 +41,8 @@ namespace LevelEditor.ViewModel {
             FileDialog.Filter = "Image File|*.png;*.jpg";
 
             BrowseCommand = new RelayCommand(StartBrowse);
-            
+
+            _sizeExp = 5;
             WorkingFile = "Images/NoTilesetImage.png";
             UpdateImageSource();
 
@@ -49,14 +51,14 @@ namespace LevelEditor.ViewModel {
         private void StartBrowse () {
             if (FileDialog.ShowDialog() == true) {
                 WorkingFile = FileDialog.FileName;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorkingFile"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkingFile)));
                 UpdateImageSource();
             }
         }
 
         private void UpdateImageSource () {
             Tileset = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Tileset"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tileset)));
 
         } 
 
