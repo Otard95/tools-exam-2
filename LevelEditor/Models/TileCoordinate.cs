@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.Linq;
 
 namespace LevelEditor.Models
 {
@@ -33,5 +35,14 @@ namespace LevelEditor.Models
             return $"{X},{Y}".GetHashCode();
         }
 
+        public static bool operator ==(TileCoordinate a, TileCoordinate b)
+        {
+            return a?.Equals(b) ?? false;
+        }
+
+        public static bool operator !=(TileCoordinate a, TileCoordinate b)
+        {
+            return !(a == b);
+        }
     }
 }

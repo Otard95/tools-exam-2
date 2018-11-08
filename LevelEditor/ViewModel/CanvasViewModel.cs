@@ -14,6 +14,7 @@ namespace LevelEditor.ViewModel
 
         public Canvas Canvas { get; set; }
         public TileMap Map { get; set; }
+        public TileCoordinate LastMouseCoordinate { get; set; }
 
         public CanvasViewModel() {
             

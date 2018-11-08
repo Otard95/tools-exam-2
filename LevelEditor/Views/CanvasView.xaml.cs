@@ -75,17 +75,27 @@ namespace LevelEditor.Views
         }
 
         private void CanvasElement_MouseMove(object sender, MouseEventArgs e) {
+
             var dimension = ViewModel.Map.Dimension;
+            var position = e.GetPosition(sender as Canvas);
+            var newMouseCoordinate = new TileCoordinate(
+                x: (int)(position.X / dimension),
+                y: (int)(position.Y / dimension)
+            );
+
+            if (!IsNewTileCoordinate(newMouseCoordinate)) return;
+            ViewModel.LastMouseCoordinate = newMouseCoordinate;
 
             _mark.Height = dimension;
             _mark.Width = dimension;
-            var position = e.GetPosition(sender as Canvas);
-            var x = (int)(position.X / dimension);
-            var y = (int)(position.Y / dimension);
             Render();
-            Canvas.SetTop(_mark, dimension * y);
-            Canvas.SetLeft(_mark, dimension * x);
+            Canvas.SetTop(_mark, dimension * newMouseCoordinate.Y);
+            Canvas.SetLeft(_mark, dimension * newMouseCoordinate.X);
             CanvasElement.Children.Add(_mark);
+        }
+
+        private bool IsNewTileCoordinate(TileCoordinate newMouseCoordinate) {
+            return newMouseCoordinate != ViewModel.LastMouseCoordinate;
         }
     }
 }
