@@ -12,10 +12,40 @@
     </Page.DataContext>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20px"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20px"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="File">
+                <MenuItem Header="New">
+                    <MenuItem Header="TileMap"/>
+                </MenuItem>
+                <MenuItem Header="Open">
+                    <MenuItem Header="TileMap" Command="{Binding Path=LoadCommand}"/>
+                </MenuItem>
+                <MenuItem Header ="Save As" Command="{Binding Path=SaveAsCommand}"/>
+                <MenuItem Header ="Save" />
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="300px"/>
+            </Grid.ColumnDefinitions>
+            <Canvas
+            x:Name="CanvasElement" 
+            MouseDown="CanvasElement_MouseDown" 
+            Background="White" 
+            MouseMove="CanvasElement_MouseMove" 
+            Grid.Column="0"
+        />
+        <Grid
+            Grid.Column="1"
+            Background="DarkGray"
+        />
 
-        <Canvas x:Name="CanvasElement" MouseDown="CanvasElement_MouseDown" Background="White" MouseMove="CanvasElement_MouseMove">
-            
-        </Canvas>
-
+        </Grid>
     </Grid>
 </Page>

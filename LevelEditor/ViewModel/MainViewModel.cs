@@ -17,6 +17,7 @@ namespace LevelEditor.ViewModel {
             tilesetEditor.Show();
         }
 
+
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed

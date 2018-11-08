@@ -84,6 +84,7 @@
     <Compile Include="Models\TileMapping.cs" />
     <Compile Include="Models\TileCoordinate.cs" />
     <Compile Include="Models\TileMap.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\TileMapService.cs" />
     <Compile Include="Services\TileService.cs" />
     <Compile Include="Domain\TileType.cs" />

@@ -8,7 +8,8 @@
         Height="600"
         Width="1000"
         Title="MVVM Light Application"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
+        DataContext="{Binding Main, Source={StaticResource Locator}}" 
+        Loaded="Window_Loaded">
     
     <Window.Resources>
         <ResourceDictionary>

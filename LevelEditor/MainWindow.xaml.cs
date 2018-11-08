@@ -13,5 +13,8 @@ namespace LevelEditor {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
         }
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            WindowState = WindowState.Maximized;
+        }
     }
 }
