@@ -18,6 +18,7 @@ namespace LevelEditor.ViewModel {
         OpenFileDialog FileDialog;
         SliceMode _sliceMode;
         private string WorkingFile { get; set; }
+        private string PrevWorkingFile { get; set; }
         int _sizeExp;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -57,9 +58,22 @@ namespace LevelEditor.ViewModel {
         }
 
         private void UpdateImageSource () {
-            Tileset = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tileset)));
+            BitmapSource tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
+            double nx = Math.Log(tilesetFromFile.PixelHeight, 2);
+            int hd = (int) nx;
+            double ny = Math.Log(tilesetFromFile.PixelWidth, 2);
+            int wd = (int) ny;
 
+            if (hd != nx || wd != ny) {
+                WorkingFile = PrevWorkingFile;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkingFile)));
+                return;
+            }
+
+            PrevWorkingFile = WorkingFile;
+            Tileset = tilesetFromFile;
+            
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tileset)));
         } 
 
     }
