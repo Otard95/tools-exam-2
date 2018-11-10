@@ -18,7 +18,7 @@ namespace LevelEditor.Views
 
         public CanvasViewModel ViewModel => (CanvasViewModel) DataContext;
         private readonly Rectangle _mark = new Rectangle {
-            Fill = new SolidColorBrush(Color.FromArgb(0x22, 0x00, 0x00, 0x00)),
+            Fill = new SolidColorBrush(Color.FromArgb(0x22, 0xFF, 0xFF, 0xFF)),
             IsHitTestVisible = false
         };
 
@@ -44,7 +44,7 @@ namespace LevelEditor.Views
         private void GenerateTiles()
         {
             //var map = TileMapService.Instance.LoadMap("./TileMaps/DefaultTilemap");
-            ViewModel.Map = new TileMap(128);
+            //ViewModel.Map = new TileMap(128);
             var tileSetToUse = TileService.Instance.GetTileset("./TileSets/DefaultTileset");
             var tileToPlace = tileSetToUse.TileKeys.First();
             ViewModel.Map.PlaceTile(0, 0, tileSetToUse, tileToPlace);

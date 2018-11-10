@@ -13,11 +13,17 @@ namespace LevelEditor.Models
         public List<TileCoordinate> CoordinateMap { get; set; }
         public List<TileMapping> TileMappings { get; set; }
         public Dictionary<int, int> TilePlacements { get; set; }
+        public int Rows { get; set; }
+        public int MaxHorizontal { get; set; }
+        public int MaxVertical { get; set; }
+        public int Columns { get; set; }
 
         [JsonConstructor]
-        public TileMap(int dimension)
+        public TileMap(int dimension, int rows, int columns)
         {
             Dimension = dimension;
+            Columns = columns;
+            Rows = rows;
             TileSets = new List<TileSet>();
             TileSetMap = new Dictionary<int, int>();
             CoordinateMap = new List<TileCoordinate>();
@@ -30,6 +36,16 @@ namespace LevelEditor.Models
 
             var tileCoordinate = MapTileCoordinate(x, y);
             var coordinateIndex = FindCoordinateIndex(tileCoordinate);
+
+            if (tileCoordinate.X > MaxHorizontal)
+            {
+                MaxHorizontal = tileCoordinate.X;
+            }
+
+            if (tileCoordinate.Y > MaxVertical)
+            {
+                MaxVertical = tileCoordinate.Y;
+            }
 
             var tileSetMapId = FindTileSetMapping(tileSet);
             var tileMapping = CreateTileMapping(tileSetMapId, tileKey);

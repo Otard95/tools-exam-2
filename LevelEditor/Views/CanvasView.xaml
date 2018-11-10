@@ -13,11 +13,12 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20px"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="20px"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Menu>
+        <Border BorderThickness="0 2 0 4" BorderBrush="#555">
+            <Menu Background="DarkGray">
             <MenuItem Header="File">
                 <MenuItem Header="New">
                     <MenuItem Header="TileMap"/>
@@ -29,23 +30,69 @@
                 <MenuItem Header ="Save" />
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1">
+        </Border>
+        <Grid Grid.Row="1" Background="#AAAAAA">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="300px"/>
+                <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
-            <Canvas
-            x:Name="CanvasElement" 
-            MouseDown="CanvasElement_MouseDown" 
-            Background="White" 
-            MouseMove="CanvasElement_MouseMove" 
-            Grid.Column="0"
-        />
-        <Grid
-            Grid.Column="1"
-            Background="DarkGray"
-        />
-
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"  Grid.Column="0">
+                <Canvas
+                    x:Name="CanvasElement" 
+                    MouseDown="CanvasElement_MouseDown"
+                    Background="Black" 
+                    MouseMove="CanvasElement_MouseMove"
+                    Width="{Binding Path=Width}"
+                    Height="{Binding Path=Height}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                />
+            </ScrollViewer>
+            <Border BorderThickness="2 0 2 2" Grid.Column="1" BorderBrush="#555"><Grid Grid.Column="1" Background="DarkGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="90"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Map Size" FontSize="18"/>
+                <Border Grid.Row="1" BorderThickness="5 15 10 15" Background="#999">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label HorizontalAlignment="Left" Grid.Column="0" Content="Dimension:" Width="Auto"/>
+                        <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
+                        <Label HorizontalAlignment="Left" Grid.Column="2" Content="Height:" Width="Auto"/>
+                        <TextBlock Background="DarkGray" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
+                        <Label HorizontalAlignment="Left" Grid.Column="4" Content="Width:" Width="Auto" />
+                        <TextBlock Background="DarkGray" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition />
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                        <Label HorizontalAlignment="Left" Grid.Column="0" Content="Rows:" Width="Auto"/>
+                        <TextBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
+                        <Label HorizontalAlignment="Left" Grid.Column="2" Content="Columns:" Width="Auto" />
+                        <TextBox Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
+                    </Grid>
+                </Grid>
+                </Border>
+            </Grid>
+            </Border>
         </Grid>
+        <Grid Grid.Row="2" Background="DarkGray"/>
     </Grid>
 </Page>
