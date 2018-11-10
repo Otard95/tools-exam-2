@@ -47,66 +47,81 @@
                     VerticalAlignment="Top"
                 />
             </ScrollViewer>
-            <Border BorderThickness="2 0 2 2" Grid.Column="1" BorderBrush="#555">
-                <Grid Grid.Column="1" Background="DarkGray">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="120"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Content="Map" FontSize="18"/>
-                    <Border Grid.Row="1" BorderThickness="5 15 10 15" Background="#999">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <Border BorderThickness="2 0 2 2" BorderBrush="#555">
+                    <Grid Background="DarkGray">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="120"/>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="Map" FontSize="18"/>
+                        <Border Grid.Row="1" BorderThickness="5 15 10 15" Background="#999">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100px"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label HorizontalAlignment="Left" Grid.Column="0" Content="Marked Position" Width="Auto"/>
+                                    <Label HorizontalAlignment="Left" Grid.Column="1" Content="X" Width="Auto"/>
+                                    <TextBlock Background="DarkGray" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=LastMouseCoordinate.X}"/>
+                                    <Label HorizontalAlignment="Left" Grid.Column="3" Content="Y" Width="Auto"/>
+                                    <TextBlock Background="DarkGray" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=LastMouseCoordinate.Y}"/>
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label HorizontalAlignment="Left" Grid.Column="0" Content="Dimension:" Width="Auto"/>
+                                    <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Map.Dimension}"/>
+                                    <Label HorizontalAlignment="Left" Grid.Column="2" Content="Height:" Width="Auto"/>
+                                    <TextBlock Background="DarkGray" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
+                                    <Label HorizontalAlignment="Left" Grid.Column="4" Content="Width:" Width="Auto" />
+                                    <TextBlock Background="DarkGray" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
+                                </Grid>
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label HorizontalAlignment="Left" Grid.Column="0" Content="Rows:" Width="Auto"/>
+                                    <TextBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Columns}"/>
+                                    <Label HorizontalAlignment="Left" Grid.Column="2" Content="Columns:" Width="Auto" />
+                                    <TextBox Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Rows}"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <Label Grid.Row="2" Content="Tools" FontSize="18" />
+                        <Border Grid.Row="3" BorderThickness="5 10 10 10" Background="#999">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100px"/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Label HorizontalAlignment="Left" Grid.Column="0" Content="Marked Position" Width="Auto"/>
-                                <Label HorizontalAlignment="Left" Grid.Column="1" Content="X" Width="Auto"/>
-                                <TextBlock Background="DarkGray" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=LastMouseCoordinate.X}"/>
-                                <Label HorizontalAlignment="Left" Grid.Column="3" Content="Y" Width="Auto"/>
-                                <TextBlock Background="DarkGray" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=LastMouseCoordinate.Y}"/>
+                                <Button Grid.Column="0" Content="PlaceTool" Command="{Binding Path=SelectPlaceToolCommand}"/>
+                                <Button Grid.Column="1" Content="EraserTool" Command="{Binding Path=SelectEraserToolCommand}"/>
                             </Grid>
-                            <Grid Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70"/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Label HorizontalAlignment="Left" Grid.Column="0" Content="Dimension:" Width="Auto"/>
-                                <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Map.Dimension}"/>
-                                <Label HorizontalAlignment="Left" Grid.Column="2" Content="Height:" Width="Auto"/>
-                                <TextBlock Background="DarkGray" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
-                                <Label HorizontalAlignment="Left" Grid.Column="4" Content="Width:" Width="Auto" />
-                                <TextBlock Background="DarkGray" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
-                            </Grid>
-                            <Grid Grid.Row="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Label HorizontalAlignment="Left" Grid.Column="0" Content="Rows:" Width="Auto"/>
-                                <TextBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Columns}"/>
-                                <Label HorizontalAlignment="Left" Grid.Column="2" Content="Columns:" Width="Auto" />
-                                <TextBox Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Rows}"/>
-                            </Grid>
-                        </Grid>
-                    </Border>
-                </Grid>
-            </Border>
+                        </Border>
+                    </Grid>
+                </Border>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Page>

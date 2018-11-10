@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LevelEditor.Services
+namespace LevelEditor.Domain.Exceptions
 {
     public class BitmapLoadException : Exception
     {

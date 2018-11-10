@@ -36,9 +36,7 @@ namespace LevelEditor.Views
             var dimension = ViewModel.Map.Dimension;
             var x = (int)(position.X / dimension);
             var y = (int)(position.Y / dimension);
-            var tileSet = ViewModel.Map.TileSets.First();
-            var tileKey = tileSet.TileKeys.First();
-            ViewModel.Map.PlaceTile(x, y, tileSet, tileKey);
+            ViewModel.EditMap(x, y);
             Render();
         }
 

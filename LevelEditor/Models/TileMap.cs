@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Navigation;
 using LevelEditor.Services;
 using Newtonsoft.Json;
 
@@ -160,6 +162,10 @@ namespace LevelEditor.Models
             TileSetMap[oldTileSet.Id] = newTileSet.Id;
         }
 
-
+        public void EraseTile(int x, int y)
+        {
+            var tileCoordinate = new TileCoordinate(x, y);
+            CoordinateMap.Remove(tileCoordinate);
+        }
     }
 }
