@@ -1,11 +1,11 @@
 {
-  "id": 1,
+  "id": "05e3d410-6643-4af8-9455-a6110dcdaad8",
   "name": "DefaultTileset",
-  "dimension":  128, 
+  "dimension": 128,
   "tileKeys": [
     {
       "id": 1,
-      "type": 1, 
+      "type": 1,
       "contentPath": "./Images/DefaultTile.png"
     }
   ]

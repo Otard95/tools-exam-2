@@ -7,8 +7,8 @@ namespace LevelEditor.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int Dimension { get; set; }
-
         public HashSet<TileKey> TileKeys { get; set; }
+        public int MapId { get; set; }
 
         public TileSet(string name, int dimention)
         {

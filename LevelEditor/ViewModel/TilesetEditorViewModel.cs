@@ -40,16 +40,17 @@ namespace LevelEditor.ViewModel {
             set {
                 _sizeExp = value;
                 _tileset.Dimension = (int) Math.Pow(2, SizeExp);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dimention)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dimension)));
             }
     }
-        public int Dimention { get => _tileset.Dimension; }
+        public int Dimension => _tileset.Dimension;
 
         #endregion
 
         public TilesetEditorViewModel () {
             _sizeExp = 5;
-            _tileset = new TileSet("New Tileset", Dimention);
+            const int dimension = 128;
+            _tileset = new TileSet("New Tileset", dimension);
 
             FileDialog = new OpenFileDialog();
             FileDialog.Filter = "Image File|*.png;*.jpg";

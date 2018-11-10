@@ -24,7 +24,7 @@
                 <ComboBox HorizontalAlignment="Center" Width="190" Height="20" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
                 <Label Content="Size" Margin="20,0,0,0"/>
                 <Slider Minimum="4" SmallChange="1" Width="150" VerticalAlignment="Center" Value="{Binding SizeExp}" Maximum="8"/>
-                <TextBox Height="22" TextWrapping="Wrap" Text="{Binding Dimention, Mode=OneWay}" Width="52"/>
+                <TextBox Height="22" TextWrapping="Wrap" Text="{Binding Dimension, Mode=OneWay}" Width="52"/>
             </StackPanel>
         </Border>
     </Grid>

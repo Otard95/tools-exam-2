@@ -29,10 +29,10 @@ namespace LevelEditor {
 
             int height = ViewModel.Tileset.PixelHeight;
             int width = ViewModel.Tileset.PixelWidth;
-            int dimention = ViewModel.Dimention;
+            int dimention = ViewModel.Dimension;
 
-            int numHorizontalLines = (int) Math.Ceiling(height * 1f / ViewModel.Dimention);
-            int numVerticalLines = (int) Math.Ceiling(width * 1f / ViewModel.Dimention);
+            int numHorizontalLines = (int) Math.Ceiling(height * 1f / ViewModel.Dimension);
+            int numVerticalLines = (int) Math.Ceiling(width * 1f / ViewModel.Dimension);
 
             CanvasElement.Children.Clear();
 
