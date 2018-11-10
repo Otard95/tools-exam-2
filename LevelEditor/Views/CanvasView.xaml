@@ -15,21 +15,20 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Border BorderThickness="0 2 0 4" BorderBrush="#555">
+        <Border Grid.Row="0" BorderThickness="0 2 0 4" BorderBrush="#555">
             <Menu Background="DarkGray">
-            <MenuItem Header="File">
-                <MenuItem Header="New">
-                    <MenuItem Header="TileMap"/>
+                <MenuItem Header="File">
+                    <MenuItem Header="New">
+                        <MenuItem Header="TileMap"/>
+                    </MenuItem>
+                    <MenuItem Header="Open">
+                        <MenuItem Header="TileMap" Command="{Binding Path=LoadCommand}"/>
+                    </MenuItem>
+                    <MenuItem Header ="Save As" Command="{Binding Path=SaveAsCommand}"/>
+                    <MenuItem Header ="Save" Command="{Binding Path=SaveCommand}"/>
                 </MenuItem>
-                <MenuItem Header="Open">
-                    <MenuItem Header="TileMap" Command="{Binding Path=LoadCommand}"/>
-                </MenuItem>
-                <MenuItem Header ="Save As" Command="{Binding Path=SaveAsCommand}"/>
-                <MenuItem Header ="Save" />
-            </MenuItem>
-        </Menu>
+            </Menu>
         </Border>
         <Grid Grid.Row="1" Background="#AAAAAA">
             <Grid.ColumnDefinitions>
@@ -48,51 +47,66 @@
                     VerticalAlignment="Top"
                 />
             </ScrollViewer>
-            <Border BorderThickness="2 0 2 2" Grid.Column="1" BorderBrush="#555"><Grid Grid.Column="1" Background="DarkGray">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="90"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Row="0" Content="Map Size" FontSize="18"/>
-                <Border Grid.Row="1" BorderThickness="5 15 10 15" Background="#999">
-                <Grid>
+            <Border BorderThickness="2 0 2 2" Grid.Column="1" BorderBrush="#555">
+                <Grid Grid.Column="1" Background="DarkGray">
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="120"/>
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Label HorizontalAlignment="Left" Grid.Column="0" Content="Dimension:" Width="Auto"/>
-                        <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
-                        <Label HorizontalAlignment="Left" Grid.Column="2" Content="Height:" Width="Auto"/>
-                        <TextBlock Background="DarkGray" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
-                        <Label HorizontalAlignment="Left" Grid.Column="4" Content="Width:" Width="Auto" />
-                        <TextBlock Background="DarkGray" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
-                    </Grid>
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition />
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                        <Label HorizontalAlignment="Left" Grid.Column="0" Content="Rows:" Width="Auto"/>
-                        <TextBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
-                        <Label HorizontalAlignment="Left" Grid.Column="2" Content="Columns:" Width="Auto" />
-                        <TextBox Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
-                    </Grid>
+                    <Label Grid.Row="0" Content="Map" FontSize="18"/>
+                    <Border Grid.Row="1" BorderThickness="5 15 10 15" Background="#999">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100px"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Label HorizontalAlignment="Left" Grid.Column="0" Content="Marked Position" Width="Auto"/>
+                                <Label HorizontalAlignment="Left" Grid.Column="1" Content="X" Width="Auto"/>
+                                <TextBlock Background="DarkGray" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=LastMouseCoordinate.X}"/>
+                                <Label HorizontalAlignment="Left" Grid.Column="3" Content="Y" Width="Auto"/>
+                                <TextBlock Background="DarkGray" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=LastMouseCoordinate.Y}"/>
+                            </Grid>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Label HorizontalAlignment="Left" Grid.Column="0" Content="Dimension:" Width="Auto"/>
+                                <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Map.Dimension}"/>
+                                <Label HorizontalAlignment="Left" Grid.Column="2" Content="Height:" Width="Auto"/>
+                                <TextBlock Background="DarkGray" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
+                                <Label HorizontalAlignment="Left" Grid.Column="4" Content="Width:" Width="Auto" />
+                                <TextBlock Background="DarkGray" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Width}"/>
+                            </Grid>
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Label HorizontalAlignment="Left" Grid.Column="0" Content="Rows:" Width="Auto"/>
+                                <TextBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Columns}"/>
+                                <Label HorizontalAlignment="Left" Grid.Column="2" Content="Columns:" Width="Auto" />
+                                <TextBox Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Rows}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
                 </Grid>
-                </Border>
-            </Grid>
             </Border>
         </Grid>
-        <Grid Grid.Row="2" Background="DarkGray"/>
     </Grid>
 </Page>

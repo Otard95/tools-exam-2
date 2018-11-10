@@ -74,6 +74,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Domain\FileExtension.cs" />
     <Compile Include="Models\FileKey.cs" />
     <Compile Include="Models\TileKey.cs" />
     <Compile Include="Domain\Exceptions\TileSetDeserializeException.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Models\TileCoordinate.cs" />
     <Compile Include="Models\TileMap.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Domain\Exceptions\FileServiceException.cs" />
     <Compile Include="Services\TileMapService.cs" />
     <Compile Include="Services\TileService.cs" />
     <Compile Include="Domain\TileType.cs" />

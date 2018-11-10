@@ -27,6 +27,7 @@ namespace LevelEditor.Views
             InitializeComponent();
             ViewModel.Canvas = CanvasElement;
             GenerateTiles();
+            //Render();
         }
 
         private void CanvasElement_MouseDown (object sender, MouseButtonEventArgs e)

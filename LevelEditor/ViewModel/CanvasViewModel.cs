@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using LevelEditor.Domain;
 using LevelEditor.Models;
 using LevelEditor.Services;
 
@@ -16,38 +19,74 @@ namespace LevelEditor.ViewModel
 {
     public class CanvasViewModel : ViewModelBase
     {
-        private int _height;
-        private int _width;
+        private const string DefaultFileName = "Map";
+        private string _savedFileName;
+        private TileCoordinate _lastMouseCoordinate;
         public Canvas Canvas { get; set; }
         public TileMap Map { get; set; }
-        public TileCoordinate LastMouseCoordinate { get; set; }
-        public RelayCommand SaveAsCommand { get; set; }
-        public RelayCommand LoadCommand { get; set; }
 
-        public int Height
+        public TileCoordinate LastMouseCoordinate
         {
-            get => _height;
-            set => Set(ref _height, value);
+            get => _lastMouseCoordinate;
+            set => Set(ref _lastMouseCoordinate, value);
         }
 
-        public int Width
+        public RelayCommand SaveAsCommand { get; set; }
+        public RelayCommand SaveCommand { get; set; }
+        public RelayCommand LoadCommand { get; set; }
+
+        public string SavedFileName
         {
-            get => _width;
-            set => Set(ref _width, value);
+            get => _savedFileName;
+            set
+            {
+                Set(ref _savedFileName, value);
+                SaveCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public int Height => Map.Dimension * Map.Rows;
+
+        public int Width => Map.Dimension * Map.Columns;
+
+        public int Rows
+        {
+            get => Map.Rows;
+            set
+            {
+                Map.Rows = value;
+                RaisePropertyChanged(nameof(Rows));
+                RaisePropertyChanged(nameof(Height));
+            }
+        }
+
+        public int Columns {
+            get => Map.Columns;
+            set {
+                Map.Columns = value;
+                RaisePropertyChanged(nameof(Columns));
+                RaisePropertyChanged(nameof(Width));
+            }
         }
 
         public CanvasViewModel()
         {
             Map = new TileMap(128, 20, 20);
-            Height = Map.Dimension * Map.Rows;
-            Width = Map.Dimension * Map.Columns;
+
             SaveAsCommand = new RelayCommand(
-                () => FileService.SaveFile(Map, "UntitledMap", "json")
+                () => FileService.SaveFileAs(Map, DefaultFileName, FileExtension.Json, fullFilePath => SavedFileName = fullFilePath)
+            );
+            SaveCommand = new RelayCommand(
+                () => FileService.SaveFile(Map, SavedFileName), 
+                canExecute: () => !string.IsNullOrEmpty(SavedFileName)
             );
             LoadCommand = new RelayCommand(
-                () => FileService.OpenFile("Map", "json", (TileMap map) => Map = map )
+                () => FileService.OpenFile(DefaultFileName, FileExtension.Json, (TileMap map, string fullFilePath) =>
+                {
+                    Map = map;
+                    SavedFileName = fullFilePath;
+                })
             );
         }
-        
     }
 }
