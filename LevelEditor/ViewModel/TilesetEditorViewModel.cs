@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using LevelEditor.Models;
 using LevelEditor.Services;
 using Microsoft.Win32;
 using System;
@@ -10,10 +11,12 @@ using System.Windows.Media.Imaging;
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : INotifyPropertyChanged {
         
-        private enum SliceMode {
+        enum SliceMode {
             CellCount,
             CellSize
         }
+
+        TileSet _tileset;
         
         OpenFileDialog FileDialog;
         SliceMode _sliceMode;
@@ -32,21 +35,27 @@ namespace LevelEditor.ViewModel {
         public BitmapSource Tileset { get; private set; }
         public string[] SliceModeChoices { get { return Enum.GetNames(typeof(SliceMode)); } }
         public int SelectedSliceMode { get => (int) _sliceMode; set => _sliceMode = (SliceMode) value; }
-        public int SizeExp { get => _sizeExp; set { _sizeExp = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dimention))); } }
-        public int Dimention { get => (int) Math.Pow(2, SizeExp); }
+        public int SizeExp {
+            get => _sizeExp;
+            set {
+                _sizeExp = value;
+                _tileset.Dimension = (int) Math.Pow(2, SizeExp);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dimention)));
+            }
+    }
+        public int Dimention { get => _tileset.Dimension; }
 
         #endregion
 
         public TilesetEditorViewModel () {
+            _sizeExp = 5;
+            _tileset = new TileSet("New Tileset", Dimention);
+
             FileDialog = new OpenFileDialog();
             FileDialog.Filter = "Image File|*.png;*.jpg";
 
             BrowseCommand = new RelayCommand(StartBrowse);
-
-            _sizeExp = 5;
-            WorkingFile = "Images/NoTilesetImage.png";
-            UpdateImageSource();
-
+            
         }
 
         private void StartBrowse () {
