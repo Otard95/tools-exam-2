@@ -13,9 +13,8 @@ using LevelEditor.Domain;
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : ViewModelBase
     {
-
-        TileSet _tileset;
-        OpenFileDialog FileDialog;
+        private readonly TileSet _tileSet;
+        private readonly OpenFileDialog _fileDialog;
         private SliceType _sliceType;
         private string _workingFile;
         private string PrevWorkingFile { get; set; }
@@ -58,9 +57,9 @@ namespace LevelEditor.ViewModel {
         }
 
         public int Dimension {
-            get => _tileset.Dimension;
+            get => _tileSet.Dimension;
             set {
-                _tileset.Dimension = value;
+                _tileSet.Dimension = value;
                 RaisePropertyChanged(nameof(Dimension));
             }
         }
@@ -70,36 +69,36 @@ namespace LevelEditor.ViewModel {
         public TilesetEditorViewModel () {
             _sizeExp = 5;
             const int dimension = 128;
-            _tileset = new TileSet("New TileSetImageSource", dimension);
+            _tileSet = new TileSet("New TileSetImageSource", dimension);
 
 
-            FileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Png}"};
+            _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
             
         }
 
         private void StartBrowse () {
-            if (FileDialog.ShowDialog() != true) return;
-            WorkingFile = FileDialog.FileName;
-            UpdateImageSource();
+            if (_fileDialog.ShowDialog() != true) return;
+            WorkingFile = _fileDialog.FileName;
+            // UpdateImageSource();
         }
 
         private void UpdateImageSource () {
 
             // Review: We should probably be more specific with the naming.
-            var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
-            var hd = (int)nx;
-            var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
-            var wd = (int)ny;
+            //var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
+            //var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
+            //var hd = (int)nx;
+            //var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
+            //var wd = (int)ny;
 
-            if (hd != nx || wd != ny) {
-                WorkingFile = PrevWorkingFile;
-                return;
-            }
+            //if (hd != nx || wd != ny) {
+            //    WorkingFile = PrevWorkingFile;
+            //    return;
+            //}
 
-            PrevWorkingFile = WorkingFile;
+            //PrevWorkingFile = WorkingFile;
         } 
 
     }

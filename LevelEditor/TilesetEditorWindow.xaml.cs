@@ -13,8 +13,8 @@ namespace LevelEditor {
     public partial class TilesetEditorWindow : Window {
 
         public TilesetEditorViewModel ViewModel => (TilesetEditorViewModel) DataContext;
-        private List<Line> _verticalLines = new List<Line>();
-        private List<Line> _horizontalLines = new List<Line>();
+        private readonly List<Line> _verticalLines = new List<Line>();
+        private readonly List<Line> _horizontalLines = new List<Line>();
         private SolidColorBrush _lineBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
 
         public TilesetEditorWindow () {
@@ -25,45 +25,47 @@ namespace LevelEditor {
 
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 
-            if (string.IsNullOrEmpty(ViewModel.WorkingFile)) return;
+            if (TileSetIsNotLoaded()) return;
 
-            int height = ViewModel.TileSetImageSource.PixelHeight;
-            int width = ViewModel.TileSetImageSource.PixelWidth;
-            int dimention = ViewModel.Dimension;
+            ClearPreviousRender();
 
-            int numHorizontalLines = (int) Math.Ceiling(height * 1f / ViewModel.Dimension);
-            int numVerticalLines = (int) Math.Ceiling(width * 1f / ViewModel.Dimension);
+            var height = ViewModel.TileSetImageSource.PixelHeight;
+            var width = ViewModel.TileSetImageSource.PixelWidth;
+            var dimension = ViewModel.Dimension;
 
-            CanvasElement.Children.Clear();
+            var numHorizontalLines = (int)Math.Ceiling(height * 1f / ViewModel.Dimension);
+            var numVerticalLines = (int)Math.Ceiling(width * 1f / ViewModel.Dimension);
 
-            Image tilesetImage = new Image {
+            var tileSetImage = new Image {
                 Source = ViewModel.TileSetImageSource,
             };
-            CanvasElement.Children.Add(tilesetImage);
-            
-            for (int x = 0; x < numHorizontalLines; x++) {
+            CanvasElement.Children.Add(tileSetImage);
+
+            // TODO: Explain better what is going on here.
+            for (var x = 0; x < numHorizontalLines; x++) {
                 if (_horizontalLines.Count <= x) {
-                    Line lineToAdd = new Line {
+                    var lineToAdd = new Line {
                         X1 = 0,
                         X2 = width,
-                        Y1 = x * dimention,
-                        Y2 = x * dimention,
+                        Y1 = x * dimension,
+                        Y2 = x * dimension,
                         Stroke = _lineBrush,
                         StrokeThickness = 2,
                     };
                     _horizontalLines.Add(lineToAdd);
                     CanvasElement.Children.Add(lineToAdd);
-                } else {
-                    _horizontalLines[x].Y1 = x * dimention;
-                    _horizontalLines[x].Y2 = x * dimention;
+                }
+                else {
+                    _horizontalLines[x].Y1 = x * dimension;
+                    _horizontalLines[x].Y2 = x * dimension;
                     CanvasElement.Children.Add(_horizontalLines[x]);
                 }
             }
-            for (int y = 0; y < numVerticalLines; y++) {
+            for (var y = 0; y < numVerticalLines; y++) {
                 if (_verticalLines.Count <= y) {
-                    Line lineToAdd = new Line {
-                        X1 = y * dimention,
-                        X2 = y * dimention,
+                    var lineToAdd = new Line {
+                        X1 = y * dimension,
+                        X2 = y * dimension,
                         Y1 = 0,
                         Y2 = height,
                         Stroke = _lineBrush,
@@ -71,13 +73,24 @@ namespace LevelEditor {
                     };
                     _verticalLines.Add(lineToAdd);
                     CanvasElement.Children.Add(lineToAdd);
-                } else {
-                    _verticalLines[y].X1 = y * dimention;
-                    _verticalLines[y].X2 = y * dimention;
+                }
+                else {
+                    _verticalLines[y].X1 = y * dimension;
+                    _verticalLines[y].X2 = y * dimension;
                     CanvasElement.Children.Add(_verticalLines[y]);
                 }
             }
 
+        }
+
+        private void ClearPreviousRender() {
+            _verticalLines.Clear();
+            _horizontalLines.Clear();
+            CanvasElement.Children.Clear();
+        }
+
+        private bool TileSetIsNotLoaded() {
+            return string.IsNullOrEmpty(ViewModel.WorkingFile);
         }
     }
 }
