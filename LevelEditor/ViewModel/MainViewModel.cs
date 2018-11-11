@@ -13,8 +13,7 @@ namespace LevelEditor.ViewModel {
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel () {
-            var tilesetEditor = new TilesetEditorWindow();
-            tilesetEditor.Show();
+
         }
 
 

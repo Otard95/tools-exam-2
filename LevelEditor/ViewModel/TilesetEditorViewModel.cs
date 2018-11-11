@@ -69,7 +69,7 @@ namespace LevelEditor.ViewModel {
         public TilesetEditorViewModel () {
             _sizeExp = 5;
             const int dimension = 128;
-            _tileSet = new TileSet("New TileSetImageSource", dimension);
+            _tileSet = new TileSet(Guid.Empty, "New TileSetImageSource", dimension);
 
 
             _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg}"};

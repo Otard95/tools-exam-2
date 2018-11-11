@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LevelEditor.Models
+namespace LevelEditor.Domain.Exceptions
 {
     internal class TileSetDeserializeException : Exception
     {

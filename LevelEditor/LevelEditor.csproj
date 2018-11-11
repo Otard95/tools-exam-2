@@ -76,6 +76,7 @@
     </ApplicationDefinition>
     <Compile Include="Domain\FileExtension.cs" />
     <Compile Include="Domain\MapToolState.cs" />
+    <Compile Include="Domain\TileRules.cs" />
     <Compile Include="Models\FileKey.cs" />
     <Compile Include="Models\TileKey.cs" />
     <Compile Include="Domain\Exceptions\TileSetDeserializeException.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Domain\Exceptions\TileMapLogicException.cs" />
     <Compile Include="Domain\Exceptions\BitmapLoadException.cs" />
     <Compile Include="Domain\Exceptions\TileSetAmbiguityException.cs" />
+    <Compile Include="Domain\Exceptions\TileRuleException.cs" />
     <Compile Include="Models\TileSetDictionary.cs" />
     <Compile Include="Services\BitmapService.cs" />
     <Compile Include="Models\TileMapping.cs" />

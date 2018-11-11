@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using LevelEditor.Domain;
+using LevelEditor.Domain.Exceptions;
+using Newtonsoft.Json;
 
 namespace LevelEditor.Models
 {
@@ -9,13 +12,18 @@ namespace LevelEditor.Models
         public string Name { get; set; }
         public int Dimension { get; set; }
         public HashSet<TileKey> TileKeys { get; set; }
+        public string ContentPath { get; set; }
         public int MapId { get; set; }
 
-        public TileSet(string name, int dimension)
+        [JsonConstructor]
+        public TileSet(Guid id, string name, int dimension)
         {
-            Id = Guid.NewGuid();
+            Id = id == Guid.Empty ? Guid.NewGuid() : id;
             Name = name;
+            if (TileRules.InvalidTileDimension(dimension))
+                throw new TileRuleException($"{dimension} is not a valid tile dimension");
             Dimension = dimension;
+            TileKeys = new HashSet<TileKey>();
         }
 
         public bool Equals(TileSet other)

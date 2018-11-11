@@ -30,6 +30,7 @@ namespace LevelEditor.ViewModel
         public RelayCommand SaveCommand { get; set; }
         public RelayCommand LoadCommand { get; set; }
         public RelayCommand ImportTileSetCommand { get; set; }
+        public RelayCommand CreateNewTileSetCommand { get; set; }
         public RelayCommand SelectPlaceToolCommand { get; set; }
         public RelayCommand SelectEraserToolCommand { get; set; }
 
@@ -124,6 +125,7 @@ namespace LevelEditor.ViewModel
                 () => FileService.OpenFile(DefaultFileName, FileExtension.Json, (TileMap map, string fullFilePath) => {
                     Map = map;
                     SavedFileName = fullFilePath;
+                    SelectedTileSet = Map.TileSetMap.TileSets.FirstOrDefault();
                 })
             );
             ImportTileSetCommand = new RelayCommand(
@@ -132,6 +134,13 @@ namespace LevelEditor.ViewModel
                     Map.TileSetMap.MapNewTileSet(tileSet);
                     SelectedTileSet = tileSet;
                 })
+            );
+            CreateNewTileSetCommand = new RelayCommand(
+                () =>
+                {
+                    var tileSetEditor = new TilesetEditorWindow();
+                    tileSetEditor.Show();
+                }
             );
 
             InitializeToolState();

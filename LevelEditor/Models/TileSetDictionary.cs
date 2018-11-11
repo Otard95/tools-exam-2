@@ -75,9 +75,7 @@ namespace LevelEditor.Models {
         {
             get
             {
-                var searchObj = new TileSet("", 0) {
-                    Id = key
-                };
+                var searchObj = new TileSet(key, "", TileSets.First().Dimension);
                 var index = TileSets.IndexOf(searchObj);
                 return TileSets[index];
             }
