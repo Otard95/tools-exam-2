@@ -32,11 +32,10 @@ namespace LevelEditor.Services {
 
         public BitmapSource GetBitmapSource(string bitmapSourcePath)
         {
-            if (BitmapFactory.TryGetValue(bitmapSourcePath, out var bitMapSource))
-                return bitMapSource;
-
             try
             {
+                if (BitmapFactory.TryGetValue(bitmapSourcePath, out var bitMapSource))
+                    return bitMapSource;
                 var bitmap = new Bitmap(bitmapSourcePath);
                 var bitmapSource = BitmapToBitmapSource(bitmap);
                 BitmapFactory.Add(bitmapSourcePath, bitmapSource);

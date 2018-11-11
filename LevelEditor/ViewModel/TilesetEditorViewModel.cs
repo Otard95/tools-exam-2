@@ -29,9 +29,9 @@ namespace LevelEditor.ViewModel {
 
         public BitmapSource TileSetImageSource => BitmapService.Instance.GetBitmapSource(WorkingFile);
 
-        private string WorkingFile {
+        public string WorkingFile {
             get => _workingFile;
-            set
+            private set
             {
                 Set(ref _workingFile, value);
                 RaisePropertyChanged(nameof(TileSetImageSource));
@@ -89,15 +89,15 @@ namespace LevelEditor.ViewModel {
 
             // Review: We should probably be more specific with the naming.
             var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            //var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
-            //var hd = (int) nx;
-            //var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
-            //var wd = (int) ny;
+            var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
+            var hd = (int)nx;
+            var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
+            var wd = (int)ny;
 
-            //if (hd != nx || wd != ny) {
-            //    WorkingFile = PrevWorkingFile;
-            //    return;
-            //}
+            if (hd != nx || wd != ny) {
+                WorkingFile = PrevWorkingFile;
+                return;
+            }
 
             PrevWorkingFile = WorkingFile;
         } 

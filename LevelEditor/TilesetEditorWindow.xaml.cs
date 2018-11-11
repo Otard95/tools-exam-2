@@ -25,7 +25,7 @@ namespace LevelEditor {
 
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 
-            if (ViewModel.TileSetImageSource == null) return;
+            if (string.IsNullOrEmpty(ViewModel.WorkingFile)) return;
 
             int height = ViewModel.TileSetImageSource.PixelHeight;
             int width = ViewModel.TileSetImageSource.PixelWidth;
