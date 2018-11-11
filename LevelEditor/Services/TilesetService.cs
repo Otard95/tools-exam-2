@@ -6,26 +6,39 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LevelEditor.Services {
-    public class TilesetService {
+    public class TileSetService {
 
-        private static TilesetService _instance;
-        public static TilesetService Instance => _instance ?? (_instance = new TilesetService());
+        private static TileSetService _instance;
+        public static TileSetService Instance => _instance ?? (_instance = new TileSetService());
 
-        private Dictionary<string, TileSet> _tilesets;
+        private readonly Dictionary<Guid, TileSet> _tileSets;
+        private readonly List<Action> _subscriptions;
 
-        private TilesetService () {
-            _tilesets = new Dictionary<string, TileSet>();
+        private TileSetService () {
+            _tileSets = new Dictionary<Guid, TileSet>();
+            _subscriptions = new List<Action>();
         }
 
-        public TileSet GetTileset (string id) {
-            if (_tilesets.TryGetValue(id, out var tileset))
-                return tileset;
-
-            throw new ArgumentException($"No tileset with id: {id}");
+        public void AddTileSet(TileSet newTileSet)
+        {
+            _tileSets.Add(newTileSet.Id, newTileSet);
+            _subscriptions.ForEach(s => s.Invoke());
         }
 
-        public TileSet[] GetAllTilesets () {
-            return _tilesets.Values.ToArray();
+        public TileSet GetTileSet (Guid id) {
+            if (_tileSets.TryGetValue(id, out var tileSet))
+                return tileSet;
+
+            throw new ArgumentException($"No tileSet with id: {id}");
+        }
+
+        public TileSet[] GetAllTileSets () {
+            return _tileSets.Values.ToArray();
+        }
+
+        public void Subscribe(Action notificationCallback)
+        {
+            _subscriptions.Add(notificationCallback);
         }
 
     }

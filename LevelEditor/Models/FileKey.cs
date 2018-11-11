@@ -5,7 +5,7 @@ namespace LevelEditor.Models
     public abstract class FileKey : IEquatable<FileKey> {
 
         public int Id { get; set; }
-        public string ContentPath { get; set; }
+        public virtual string ContentPath { get; set; }
         public bool Equals(FileKey other) {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;

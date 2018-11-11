@@ -51,14 +51,8 @@ namespace LevelEditor.Models {
 
         public TileSet MapNewTileSet(TileSet tileSet)
         {
-            if (TileSetHasNoId(tileSet))
-                tileSet.Id = Guid.NewGuid();
             this[tileSet.Id] = tileSet;
             return this[tileSet.Id];
-        }
-
-        private static bool TileSetHasNoId(TileSet tileSet) {
-            return tileSet.Id == Guid.Empty;
         }
 
         [JsonIgnore]
@@ -75,7 +69,7 @@ namespace LevelEditor.Models {
         {
             get
             {
-                var searchObj = new TileSet(key, "", TileSets.First().Dimension);
+                var searchObj = new TileSet(key, "", TileSets.First().Dimension, "");
                 var index = TileSets.IndexOf(searchObj);
                 return TileSets[index];
             }
@@ -84,7 +78,8 @@ namespace LevelEditor.Models {
                 var newTileSet = value; 
                 if (newTileSet == null)
                     throw new NullReferenceException();
-                newTileSet.Id = key;
+                if(newTileSet.Id != key)
+                    throw new TileSetAmbiguityException($"TileSetId must match dictionary key");
                 if (MapIdNotSet(newTileSet)) {
                     GetNextId(newTileSet);
                 }

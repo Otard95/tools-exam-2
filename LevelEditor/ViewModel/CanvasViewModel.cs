@@ -110,6 +110,8 @@ namespace LevelEditor.ViewModel
         public Canvas TileSetCanvas { get; set; }
         public TileCoordinate SelectedTileSetTilePosition { get; set; }
 
+        public TileSet[] TileSets => TileSetService.Instance.GetAllTileSets();
+
 
         public CanvasViewModel() {
             Map = new TileMap(128, 20, 20);
@@ -142,6 +144,8 @@ namespace LevelEditor.ViewModel
                     tileSetEditor.Show();
                 }
             );
+
+            TileSetService.Instance.Subscribe(() => RaisePropertyChanged(nameof(TileSets)));
 
             InitializeToolState();
         }

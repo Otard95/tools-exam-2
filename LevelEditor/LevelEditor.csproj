@@ -98,7 +98,7 @@
     <Compile Include="Models\TileSet.cs" />
     <Compile Include="Services\JsonService.cs" />
     <Compile Include="Models\TileSetKey.cs" />
-    <Compile Include="Services\TilesetService.cs" />
+    <Compile Include="Services\TileSetService.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Domain\SliceType.cs" />

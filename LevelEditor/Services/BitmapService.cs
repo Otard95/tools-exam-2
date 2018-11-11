@@ -42,7 +42,10 @@ namespace LevelEditor.Services {
         }
 
         public BitmapSource GetBitmapSource(string bitmapSourcePath, Rectangle? area = null) {
-            try {
+            try
+            {
+                if (string.IsNullOrEmpty(bitmapSourcePath))
+                    return null;
                 var key = new SliceKey(bitmapSourcePath, area);
                 if (BitmapSourceFactory.TryGetValue(key, out var croppedBitmapSource))
                     return croppedBitmapSource;
@@ -51,13 +54,16 @@ namespace LevelEditor.Services {
 
                 if (area.HasValue)
                 {
-                    var slicedBitmapPart = bitMap.Clone(area.Value, PixelFormat.DontCare);
-                    var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
-                    BitmapSourceFactory.Add(key, bitMapSource);
-                    return bitMapSource;
+                    using (var slicedBitmapPart = bitMap.Clone(area.Value, bitMap.PixelFormat)) {
+                        var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
+                        BitmapSourceFactory.Add(key, bitMapSource);
+                        return bitMapSource;
+                    }
+
                 }
                 else
                 {
+
                     var bitMapSource = BitmapToBitmapSource(bitMap);
                     BitmapSourceFactory.Add(key, bitMapSource);
                     return bitMapSource;

@@ -36,14 +36,15 @@ namespace LevelEditor.Views
             IsHitTestVisible = false
         };
 
+        private System.Drawing.Rectangle SliceRectangle = new System.Drawing.Rectangle(0,0,0,0);
+
         public CanvasView()
         {
             InitializeComponent();
             ViewModel.Canvas = CanvasElement;
             ViewModel.TileSetCanvas = TileSetCanvas;
             ViewModel.PropertyChanged += ViewModelOnPropertyChanged;
-            GenerateTiles();
-            //Render();
+            Render();
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -75,32 +76,32 @@ namespace LevelEditor.Views
             Render();
         }
 
-        private void GenerateTiles()
-        {
-            //var map = TileMapService.Instance.LoadMap("./TileMaps/DefaultTilemap");
-            //ViewModel.Map = new TileMap(128);
-            //var tileSetToUse = TileService.Instance.GetTileset("./TileSets/DefaultTileset");
-            // var tileToPlace = tileSetToUse.TileKeys.First();
-            Render();
-        }
-
         private void Render()
         {
             CanvasElement.Children.Clear();
+            
+
             foreach (var coordinate in ViewModel.Map.CoordinateMap)
             {
                 var tileMapping = ViewModel.Map.GetTileMapping(coordinate.X, coordinate.Y);
                 var tileSet = ViewModel.Map.GetTileSetFromMapping(tileMapping);
                 var tileKey = ViewModel.Map.GetTileKey(tileMapping, tileSet);
-                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath);
+                var dimension = tileSet.Dimension;
+                var x = tileSet.Dimension * coordinate.X;
+                var y = tileSet.Dimension * coordinate.Y;
+                SliceRectangle.Width = dimension;
+                SliceRectangle.Height = dimension;
+                SliceRectangle.X = x;
+                SliceRectangle.Y = y;
+                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
                 var tile = new Image
                 {
-                    Height = tileSet.Dimension,
-                    Width = tileSet.Dimension,
+                    Height = dimension,
+                    Width = dimension,
                     Source = tileSource
                 };
-                Canvas.SetTop(tile, tileSet.Dimension * coordinate.Y);
-                Canvas.SetLeft(tile, tileSet.Dimension * coordinate.X);
+                Canvas.SetTop(tile, y);
+                Canvas.SetLeft(tile, x);
                 CanvasElement.Children.Add(tile);
             }
         }
@@ -182,16 +183,20 @@ namespace LevelEditor.Views
             var maxColumns = 256 / dimension;
             var column = 0;
             var row = 0;
+            SliceRectangle.Width = tileSet.Dimension;
+            SliceRectangle.Height = tileSet.Dimension;
             foreach (var tileKey in tileSet.TileKeys) {
-                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath);
+
+                var y = column > maxColumns ? (++row) : row;
+                var x = column > maxColumns ? (column = 0) : column++;
+                SliceRectangle.X = x * dimension;
+                SliceRectangle.Y = y * dimension;
+                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
                 var tile = new Image {
                     Height = dimension,
                     Width = dimension,
                     Source = tileSource
                 };
-
-                var y = column > maxColumns ? (++row) : row;
-                var x = column > maxColumns ? (column = 0) : column++;
 
                 var coordinate = new TileCoordinate(x, y);
 

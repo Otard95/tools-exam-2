@@ -3,12 +3,12 @@ using LevelEditor.Models;
 using LevelEditor.Services;
 using Microsoft.Win32;
 using System;
-using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using LevelEditor.Domain;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : ViewModelBase
@@ -19,8 +19,10 @@ namespace LevelEditor.ViewModel {
         private string _workingFile;
         private string PrevWorkingFile { get; set; }
         private int _sizeExp;
+        private int _dimension;
 
         public ICommand BrowseCommand { get; private set; }
+        public RelayCommand SliceCommand { get; private set; }
 
         public Canvas Canvas { get; set; }
 
@@ -34,6 +36,7 @@ namespace LevelEditor.ViewModel {
             {
                 Set(ref _workingFile, value);
                 RaisePropertyChanged(nameof(TileSetImageSource));
+                SliceCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -56,25 +59,25 @@ namespace LevelEditor.ViewModel {
             }
         }
 
-        public int Dimension {
-            get => _tileSet.Dimension;
-            set {
-                _tileSet.Dimension = value;
-                RaisePropertyChanged(nameof(Dimension));
-            }
+        public int Dimension
+        {
+            get => _dimension;
+            set => Set(ref _dimension, value);
         }
+        public TileSet TileSet { get; private set; }
 
-    #endregion
+        #endregion
 
         public TilesetEditorViewModel () {
             _sizeExp = 5;
             const int dimension = 128;
-            _tileSet = new TileSet(Guid.Empty, "New TileSetImageSource", dimension);
-
+            // _tileSet = new TileSet(Guid.Empty, "New TileSetImageSource", dimension, "");
+            Dimension = 128;
 
             _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
+            SliceCommand = new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0);
             
         }
 
@@ -99,8 +102,36 @@ namespace LevelEditor.ViewModel {
             //}
 
             //PrevWorkingFile = WorkingFile;
-        } 
+        }
 
+        public void SliceTileSet()
+        {
+            var tileSet = new TileSet(Guid.Empty, "New TileSetImageSource", Dimension, WorkingFile);
+            var width = TileSetImageSource.PixelWidth;
+            var height = TileSetImageSource.PixelHeight;
+            var dimension = Dimension;
+            var rowCount = (int) height / dimension;
+            var columnCount = (int) width / dimension;
+            //var cellCount = rowCount * columnCount;
+            //var sliceRectangle = new Rectangle(0, 0, dimension, dimension);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                //sliceRectangle.Y = row;
+                for (var column = 0; column < columnCount; column++)
+                {
+                    //sliceRectangle.X = column;
+                    //BitmapService.Instance.GetBitmapSource(WorkingFile, sliceRectangle);
+                    tileSet.AddTile(new TileKey
+                    {
+                        X = column,
+                        Y = row
+                    });
+                }
+            }
+
+            TileSetService.Instance.AddTileSet(tileSet);
+        }
     }
 
 }
