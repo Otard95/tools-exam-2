@@ -1,63 +1,115 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using LevelEditor.Models;
 using LevelEditor.Services;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using GalaSoft.MvvmLight;
 
 namespace LevelEditor.ViewModel {
-    public class TilesetEditorViewModel : INotifyPropertyChanged {
-        
-        private enum SliceMode {
+    public class TilesetEditorViewModel : ViewModelBase
+    {
+
+        enum SliceMode
+        {
             CellCount,
             CellSize
         }
-        
-        OpenFileDialog FileDialog;
-        SliceMode _sliceMode;
-        private string WorkingFile { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        
+        TileSet _tileset;
+
+        OpenFileDialog FileDialog;
+        private SliceMode _sliceMode;
+        private string _workingFile;
+
+        private string WorkingFile
+        {
+            get => _workingFile;
+            set => Set(ref _workingFile, value);
+        }
+
+        private string PrevWorkingFile { get; set; }
+        private int _sizeExp;
+        private BitmapSource _tilesetImageSource;
+
+
         public ICommand BrowseCommand { get; private set; }
-        
+
         public Canvas Canvas { get; set; }
 
-        #region UI proportie bindings
+        #region UI property bindings
 
-        public BitmapSource Tileset { get; private set; }
-        public string[] SliceModeChoices { get { return Enum.GetNames(typeof(SliceMode)); } }
-        public int SelectedSliceMode { get => (int) _sliceMode; set => _sliceMode = (SliceMode) value; }
-        public int Dimention { get; set; }
+        public BitmapSource TilesetImageSource
+        {
+            get => _tilesetImageSource;
+            private set => Set(ref _tilesetImageSource, value);
+        }
 
-        #endregion
+        public string[] SliceModeChoices => Enum.GetNames(typeof(SliceMode));
+
+        public int SelectedSliceMode
+        {
+            get => (int) _sliceMode;
+            set => _sliceMode = (SliceMode) value;
+        }
+
+        public int SizeExp
+        {
+            get => _sizeExp;
+            set
+            {
+                _sizeExp = value;
+                _tileset.Dimension = (int) Math.Pow(2, SizeExp);
+            }
+        }
+
+        public int Dimension {
+            get => _tileset.Dimension;
+            set {
+                _tileset.Dimension = value;
+                RaisePropertyChanged(nameof(Dimension));
+            }
+        }
+
+    #endregion
 
         public TilesetEditorViewModel () {
+            _sizeExp = 5;
+            const int dimension = 128;
+            _tileset = new TileSet("New TilesetImageSource", dimension);
+
             FileDialog = new OpenFileDialog();
             FileDialog.Filter = "Image File|*.png;*.jpg";
 
             BrowseCommand = new RelayCommand(StartBrowse);
             
-            WorkingFile = "Images/NoTilesetImage.png";
-            UpdateImageSource();
-
         }
 
         private void StartBrowse () {
-            if (FileDialog.ShowDialog() == true) {
-                WorkingFile = FileDialog.FileName;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorkingFile"));
-                UpdateImageSource();
-            }
+            if (FileDialog.ShowDialog() != true) return;
+            WorkingFile = FileDialog.FileName;
+            UpdateImageSource();
         }
 
         private void UpdateImageSource () {
-            Tileset = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Tileset"));
 
+            // Review: We should probably be more specific with the naming.
+            var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
+            var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
+            var hd = (int) nx;
+            var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
+            var wd = (int) ny;
+
+            if (hd != nx || wd != ny) {
+                WorkingFile = PrevWorkingFile;
+                return;
+            }
+
+            PrevWorkingFile = WorkingFile;
+            TilesetImageSource = tilesetFromFile;
         } 
 
     }

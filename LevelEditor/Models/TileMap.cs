@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Navigation;
 using LevelEditor.Services;
 using Newtonsoft.Json;
 
@@ -10,24 +9,20 @@ namespace LevelEditor.Models
     public class TileMap
     {
         public int Dimension { get; set; }
-        public List<TileSet> TileSets { get; set; }
-        public Dictionary<int, int> TileSetMap { get; set; }
+        public TileSetDictionary TileSetMap { get; set; }
         public List<TileCoordinate> CoordinateMap { get; set; }
         public List<TileMapping> TileMappings { get; set; }
         public Dictionary<int, int> TilePlacements { get; set; }
         public int Rows { get; set; }
-        public int MaxHorizontal { get; set; }
-        public int MaxVertical { get; set; }
         public int Columns { get; set; }
 
         [JsonConstructor]
         public TileMap(int dimension, int rows, int columns)
         {
             Dimension = dimension;
-            Columns = columns;
             Rows = rows;
-            TileSets = new List<TileSet>();
-            TileSetMap = new Dictionary<int, int>();
+            Columns = columns;
+            TileSetMap = new TileSetDictionary();
             CoordinateMap = new List<TileCoordinate>();
             TileMappings = new List<TileMapping>();
             TilePlacements = new Dictionary<int, int>();
@@ -39,18 +34,12 @@ namespace LevelEditor.Models
             var tileCoordinate = MapTileCoordinate(x, y);
             var coordinateIndex = FindCoordinateIndex(tileCoordinate);
 
-            if (tileCoordinate.X > MaxHorizontal)
+            if(!TileSetMap.TryGetTileSetMapping(tileSet.Id, out var mappedTileSet))
             {
-                MaxHorizontal = tileCoordinate.X;
+                mappedTileSet = TileSetMap.MapNewTileSet(tileSet);
             }
 
-            if (tileCoordinate.Y > MaxVertical)
-            {
-                MaxVertical = tileCoordinate.Y;
-            }
-
-            var tileSetMapId = FindTileSetMapping(tileSet);
-            var tileMapping = CreateTileMapping(tileSetMapId, tileKey);
+            var tileMapping = CreateTileMapping(mappedTileSet.MapId, tileKey);
             var tileMappingIndex = FindTileMappingIndex(tileMapping);
 
             if (TilePlacements.ContainsKey(coordinateIndex)) {
@@ -68,14 +57,7 @@ namespace LevelEditor.Models
         }
 
         public TileSet GetTileSetFromMapping(TileMapping tileMapping) {
-            if (!TileSetMap.ContainsKey(tileMapping.TileSetMapId))
-                throw new TileMapLogicException($"TileSetMapId not defined: {tileMapping.TileSetMapId}");
-            var tileSetId = TileSetMap[tileMapping.TileSetMapId];
-
-            var tileSet = TileSets.Count > tileSetId-1
-                ? TileSets[tileSetId-1]
-                : throw new TileMapLogicException($"TileSet with id: {tileSetId} undefined");
-            return tileSet;
+            return TileSetMap[tileMapping.TileSetMapId];
         }
 
         private int FindTileMappingIndex(TileMapping tileMapping) {
@@ -87,10 +69,6 @@ namespace LevelEditor.Models
             return TileMappings.IndexOf(tileMapping);
         }
 
-        private int FindTileSetMapping(TileSet tileSet)
-        {
-            return !TileSetMap.TryGetValue(tileSet.Id, out var tileSetMapId) ? MapTileSet(tileSet) : tileSetMapId;
-        }
 
         private static void CheckIfTileSetHasTileDefined(TileSet tileSet, TileKey tileKey) {
             if (!tileSet.TileKeys.Contains(tileKey))
@@ -128,22 +106,18 @@ namespace LevelEditor.Models
             return tileMapping;
         }
 
+        /// <summary>
+        /// Maps a TileSet to the TileSet Dictionary and returns a mapping-id to be used with tile-mappings
+        /// </summary>
+        /// <param name="tileSet">The TileSet Dictionary Map Id</param>
+        /// <returns></returns>
         private int MapTileSet(TileSet tileSet) {
 
             if (tileSet.Dimension != Dimension)
                 throw new TileMapLogicException("TileSet dimension must match TileMap dimension");
 
-            if (TileSets.Contains(tileSet))
-                return TileSetMap[tileSet.Id];
-
-            TileSets.Add(tileSet);
-            var mapId = GetNextTileSetMapId();
-            TileSetMap.Add(tileSet.Id, mapId);
-            return TileSetMap[tileSet.Id];
-        }
-
-        private int GetNextTileSetMapId() {
-            return TileSetMap.Count > 0 ? TileSetMap.Values.Max() + 1 : 1;
+            TileSetMap[tileSet.Id] = tileSet;
+            return TileSetMap[tileSet.Id].MapId;
         }
 
         public TileMapping GetTileMapping(int x, int y) {
@@ -153,19 +127,10 @@ namespace LevelEditor.Models
                 throw new TileMapLogicException($"Coordinate not placed: {tileCoordinate}");
             return TileMappings[tileMappingIndex];
         }
-
-        public void ReplaceTileSet(TileSet oldTileSet, TileSet newTileSet)
-        {
-            if (!TileSetMap.ContainsKey(oldTileSet.Id))
-                throw new TileMapLogicException("Cannot replace non-existing Tileset");
-            MapTileSet(newTileSet);
-            TileSetMap[oldTileSet.Id] = newTileSet.Id;
-        }
-
-        public void EraseTile(int x, int y)
-        {
+        public void EraseTile(int x, int y) {
             var tileCoordinate = new TileCoordinate(x, y);
             CoordinateMap.Remove(tileCoordinate);
         }
+
     }
 }

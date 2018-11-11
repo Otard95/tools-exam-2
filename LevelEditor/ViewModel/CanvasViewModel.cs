@@ -130,10 +130,12 @@ namespace LevelEditor.ViewModel
 
         private void PlaceTile(int x, int y)
         {
-            var tileSet = Map.TileSets.First();
+            var tileSet = Map.TileSetMap.TileSets.First();
             var tileKey = tileSet.TileKeys.First();
             Map.PlaceTile(x, y, tileSet, tileKey);
         }
+
+
 
     }
 }

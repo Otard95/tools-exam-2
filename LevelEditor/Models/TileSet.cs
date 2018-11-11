@@ -4,17 +4,18 @@ using System.Collections.Generic;
 namespace LevelEditor.Models
 {
     public class TileSet : IEquatable<TileSet> {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public int Dimension { get; set; }
-
         public HashSet<TileKey> TileKeys { get; set; }
+        public int MapId { get; set; }
 
-        public TileSet()
+        public TileSet(string name, int dimension)
         {
-
+            Id = Guid.NewGuid();
+            Name = name;
+            Dimension = dimension;
         }
-
 
         public bool Equals(TileSet other)
         {
@@ -33,7 +34,7 @@ namespace LevelEditor.Models
 
         public override int GetHashCode()
         {
-            return Id;
+            return Id.GetHashCode();
         }
     }
 }

@@ -2,7 +2,7 @@
   "Dimension": 128,
   "TileSets": [
     {
-      "Id": 1,
+      "Id": "05e3d410-6643-4af8-9455-a6110dcdaad8",
       "Name": "DefaultTileset",
       "Dimension": 128,
       "TileKeys": [
