@@ -127,7 +127,9 @@ namespace LevelEditor.ViewModel
                 })
             );
             ImportTileSetCommand = new RelayCommand(
-                () => FileService.OpenFile(DefaultTileSetName, FileExtension.Json, (TileSet tileSet, string fullFilePath) => {
+                () => FileService.OpenFile(DefaultTileSetName, FileExtension.Json, (TileSet tileSet, string fullFilePath) =>
+                {
+                    Map.TileSetMap.MapNewTileSet(tileSet);
                     SelectedTileSet = tileSet;
                 })
             );

@@ -57,6 +57,7 @@
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="35"/>
+                            <RowDefinition Height="50"/>
                             <RowDefinition Height="400"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Content="Map" FontSize="18"/>
@@ -123,7 +124,16 @@
                             </Grid>
                         </Border>
                         <Label Grid.Row="4" Content="TileSet" FontSize="18" />
-                        <ScrollViewer Grid.Row="5" Width="271" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"  Grid.Column="0">
+                        <Border Grid.Row="5" BorderThickness="5 10 10 10" Background="#999">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="PlaceTool" Command="{Binding Path=SelectPlaceToolCommand}"/>
+                            </Grid>
+                        </Border>
+                        <ScrollViewer Grid.Row="6" Width="271" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"  Grid.Column="0">
                             <Canvas
                                     x:Name="TileSetCanvas" 
                                     MouseDown="TileSetCanvas_MouseDown"

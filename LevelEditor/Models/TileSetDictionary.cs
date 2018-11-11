@@ -11,7 +11,6 @@ namespace LevelEditor.Models {
     {
         [JsonIgnore]
         private int _maxId;
-        [JsonIgnore]
         public Dictionary<int, Guid> TileSetMappings { get; set; }
         public List<TileSet> TileSets { get; set; }
 
@@ -52,8 +51,14 @@ namespace LevelEditor.Models {
 
         public TileSet MapNewTileSet(TileSet tileSet)
         {
+            if (TileSetHasNoId(tileSet))
+                tileSet.Id = Guid.NewGuid();
             this[tileSet.Id] = tileSet;
             return this[tileSet.Id];
+        }
+
+        private static bool TileSetHasNoId(TileSet tileSet) {
+            return tileSet.Id == Guid.Empty;
         }
 
         [JsonIgnore]

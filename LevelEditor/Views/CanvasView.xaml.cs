@@ -200,15 +200,18 @@ namespace LevelEditor.Views
                 TileSetCanvas.Children.Add(tile);
             }
 
-            if (TileSetTileIsSelected())
-            {
-                var tileSetSelectionMark = _selectedTileSetTileMark;
-                tileSetSelectionMark.Height = tileSet.Dimension;
-                tileSetSelectionMark.Width = tileSet.Dimension;
-                Canvas.SetTop(tileSetSelectionMark, dimension * ViewModel.SelectedTileSetTilePosition.Y);
-                Canvas.SetLeft(tileSetSelectionMark, dimension * ViewModel.SelectedTileSetTilePosition.X);
-                TileSetCanvas.Children.Add(tileSetSelectionMark);
+            if (TileSetTileIsSelected()) {
+                MarkTileSetTile(tileSet, dimension);
             }
+        }
+
+        private void MarkTileSetTile(TileSet tileSet, int dimension) {
+            var tileSetSelectionMark = _selectedTileSetTileMark;
+            tileSetSelectionMark.Height = tileSet.Dimension;
+            tileSetSelectionMark.Width = tileSet.Dimension;
+            Canvas.SetTop(tileSetSelectionMark, dimension * ViewModel.SelectedTileSetTilePosition.Y);
+            Canvas.SetLeft(tileSetSelectionMark, dimension * ViewModel.SelectedTileSetTilePosition.X);
+            TileSetCanvas.Children.Add(tileSetSelectionMark);
         }
 
         private bool TileSetTileIsSelected() {

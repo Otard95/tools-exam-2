@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace LevelEditor.Models
 {
-    public class TileSet : IEquatable<TileSet> {
+    public class TileSet : IEquatable<TileSet>
+    {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int Dimension { get; set; }
