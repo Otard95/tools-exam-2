@@ -99,6 +99,7 @@
     <Compile Include="Services\TilesetService.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="Domain\SliceType.cs" />
     <Compile Include="ViewModel\TilesetEditorViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\CanvasView.xaml.cs">

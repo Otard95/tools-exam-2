@@ -5,19 +5,18 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LevelEditor.Views"
       mc:Ignorable="d"
-      Title="TilesetImageSource Editor" Width="832" Height="900">
+      Title="TileSetImageSource Editor" Width="832" Height="900">
 
     <Window.DataContext>
         <Binding Path="TilesetEditor" Source="{StaticResource Locator}" />
     </Window.DataContext>
 
-    <Grid Margin="2,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Canvas x:Name="CanvasElement" HorizontalAlignment="Left" Height="800" VerticalAlignment="Bottom" Width="800" Margin="10,0,0,10">
-        </Canvas>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Top" Height="34" Width="800" Margin="0,10,11,0" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50px"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0"  BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="34" Width="800" Margin="0,10,11,0" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1,1,1,1" Width="798">
                 <Button Content="Open File" Width="190" Command="{Binding BrowseCommand}" Height="30"/>
                 <Label Content="Slice mode" Margin="20,0,0,0"/>
@@ -27,5 +26,6 @@
                 <TextBox Height="22" TextWrapping="Wrap" Text="{Binding Path=Dimension}" Width="52"/>
             </StackPanel>
         </Border>
+        <Canvas Grid.Row="1"  x:Name="CanvasElement" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="800"/>
     </Grid>
 </Window>

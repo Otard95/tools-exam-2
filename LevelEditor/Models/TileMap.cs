@@ -29,10 +29,15 @@ namespace LevelEditor.Models
         }
 
         public void PlaceTile(int x, int y, TileSet tileSet, TileKey tileKey) {
+
+            if (tileSet.Dimension != Dimension)
+                throw new TileMapLogicException("TileSet dimension must match TileMap dimension");
+
             CheckIfTileSetHasTileDefined(tileSet, tileKey);
 
             var tileCoordinate = MapTileCoordinate(x, y);
             var coordinateIndex = FindCoordinateIndex(tileCoordinate);
+
 
             if(!TileSetMap.TryGetTileSetMapping(tileSet.Id, out var mappedTileSet))
             {
@@ -106,20 +111,6 @@ namespace LevelEditor.Models
             return tileMapping;
         }
 
-        /// <summary>
-        /// Maps a TileSet to the TileSet Dictionary and returns a mapping-id to be used with tile-mappings
-        /// </summary>
-        /// <param name="tileSet">The TileSet Dictionary Map Id</param>
-        /// <returns></returns>
-        private int MapTileSet(TileSet tileSet) {
-
-            if (tileSet.Dimension != Dimension)
-                throw new TileMapLogicException("TileSet dimension must match TileMap dimension");
-
-            TileSetMap[tileSet.Id] = tileSet;
-            return TileSetMap[tileSet.Id].MapId;
-        }
-
         public TileMapping GetTileMapping(int x, int y) {
             var tileCoordinate = new TileCoordinate(x, y);
             var coordinateIndex = FindCoordinateIndex(tileCoordinate);
@@ -127,6 +118,7 @@ namespace LevelEditor.Models
                 throw new TileMapLogicException($"Coordinate not placed: {tileCoordinate}");
             return TileMappings[tileMappingIndex];
         }
+
         public void EraseTile(int x, int y) {
             var tileCoordinate = new TileCoordinate(x, y);
             CoordinateMap.Remove(tileCoordinate);

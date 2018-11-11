@@ -8,5 +8,7 @@ namespace LevelEditor.Domain {
     public static class FileExtension
     {
         public const string Json = "json";
+        public const string Png = "png";
+        public const string Jpg = "jpg";
     }
 }

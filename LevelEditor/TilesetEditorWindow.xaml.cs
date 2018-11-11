@@ -25,10 +25,10 @@ namespace LevelEditor {
 
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 
-            if (ViewModel.TilesetImageSource == null) return;
+            if (ViewModel.TileSetImageSource == null) return;
 
-            int height = ViewModel.TilesetImageSource.PixelHeight;
-            int width = ViewModel.TilesetImageSource.PixelWidth;
+            int height = ViewModel.TileSetImageSource.PixelHeight;
+            int width = ViewModel.TileSetImageSource.PixelWidth;
             int dimention = ViewModel.Dimension;
 
             int numHorizontalLines = (int) Math.Ceiling(height * 1f / ViewModel.Dimension);
@@ -37,7 +37,7 @@ namespace LevelEditor {
             CanvasElement.Children.Clear();
 
             Image tilesetImage = new Image {
-                Source = ViewModel.TilesetImageSource,
+                Source = ViewModel.TileSetImageSource,
             };
             CanvasElement.Children.Add(tilesetImage);
             
