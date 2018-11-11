@@ -16,16 +16,20 @@ namespace LevelEditor.ViewModel
     public class CanvasViewModel : ViewModelBase
     {
         private const string DefaultFileName = "Map";
+        private const string DefaultTileSetName = "TileSet";
         private string _savedFileName;
         private TileCoordinate _lastMouseCoordinate;
         private MapToolState _state;
         private RelayCommand _previousToolCommand;
+        private TileSet _selectedTileSet;
+        private int _selectedTile;
+        private TileCoordinate _lastTileSetMouseCoordinate;
         public Canvas Canvas { get; set; }
         public TileMap Map { get; set; }
-
         public RelayCommand SaveAsCommand { get; set; }
         public RelayCommand SaveCommand { get; set; }
         public RelayCommand LoadCommand { get; set; }
+        public RelayCommand ImportTileSetCommand { get; set; }
         public RelayCommand SelectPlaceToolCommand { get; set; }
         public RelayCommand SelectEraserToolCommand { get; set; }
 
@@ -33,6 +37,18 @@ namespace LevelEditor.ViewModel
         {
             get => _state;
             set => Set(ref _state, value);
+        }
+
+        public TileSet SelectedTileSet
+        {
+            get => _selectedTileSet;
+            set => Set(ref _selectedTileSet, value);
+        }
+
+        public int SelectedTileId
+        {
+            get => _selectedTile;
+            set => Set(ref _selectedTile, value);
         }
 
         public void SelectMapTool(MapToolState state, [CallerMemberName] string propertyName = null)
@@ -48,6 +64,12 @@ namespace LevelEditor.ViewModel
         public TileCoordinate LastMouseCoordinate {
             get => _lastMouseCoordinate;
             set => Set(ref _lastMouseCoordinate, value);
+        }
+
+        public TileCoordinate LastTileSetMouseCoordinate
+        {
+            get => _lastTileSetMouseCoordinate;
+            set => Set(ref _lastTileSetMouseCoordinate, value);
         }
 
         public string SavedFileName
@@ -84,6 +106,10 @@ namespace LevelEditor.ViewModel
             }
         }
 
+        public Canvas TileSetCanvas { get; set; }
+        public TileCoordinate SelectedTileSetTilePosition { get; set; }
+
+
         public CanvasViewModel() {
             Map = new TileMap(128, 20, 20);
 
@@ -98,6 +124,11 @@ namespace LevelEditor.ViewModel
                 () => FileService.OpenFile(DefaultFileName, FileExtension.Json, (TileMap map, string fullFilePath) => {
                     Map = map;
                     SavedFileName = fullFilePath;
+                })
+            );
+            ImportTileSetCommand = new RelayCommand(
+                () => FileService.OpenFile(DefaultTileSetName, FileExtension.Json, (TileSet tileSet, string fullFilePath) => {
+                    SelectedTileSet = tileSet;
                 })
             );
 
@@ -130,12 +161,12 @@ namespace LevelEditor.ViewModel
 
         private void PlaceTile(int x, int y)
         {
-            var tileSet = Map.TileSetMap.TileSets.First();
-            var tileKey = tileSet.TileKeys.First();
+            if (SelectedTileSet == null) return;
+            var tileSet = SelectedTileSet;
+            var tileKey = tileSet.TileKeys.FirstOrDefault(tk => tk.Id == SelectedTileId);
+            if (tileKey == null) return;
             Map.PlaceTile(x, y, tileSet, tileKey);
         }
-
-
 
     }
 }

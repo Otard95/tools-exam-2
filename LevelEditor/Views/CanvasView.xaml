@@ -22,8 +22,9 @@
                     <MenuItem Header="New">
                         <MenuItem Header="TileMap"/>
                     </MenuItem>
-                    <MenuItem Header="Open">
+                    <MenuItem Header="Import">
                         <MenuItem Header="TileMap" Command="{Binding Path=LoadCommand}"/>
+                        <MenuItem Header="TileSet" Command="{Binding Path=ImportTileSetCommand}"/>
                     </MenuItem>
                     <MenuItem Header ="Save As" Command="{Binding Path=SaveAsCommand}"/>
                     <MenuItem Header ="Save" Command="{Binding Path=SaveCommand}"/>
@@ -55,6 +56,8 @@
                             <RowDefinition Height="120"/>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="50"/>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="400"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Content="Map" FontSize="18"/>
                         <Border Grid.Row="1" BorderThickness="5 15 10 15" Background="#999">
@@ -119,6 +122,19 @@
                                 <Button Grid.Column="1" Content="EraserTool" Command="{Binding Path=SelectEraserToolCommand}"/>
                             </Grid>
                         </Border>
+                        <Label Grid.Row="4" Content="TileSet" FontSize="18" />
+                        <ScrollViewer Grid.Row="5" Width="271" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"  Grid.Column="0">
+                            <Canvas
+                                    x:Name="TileSetCanvas" 
+                                    MouseDown="TileSetCanvas_MouseDown"
+                                    Background="White" 
+                                    MouseMove="TileSetCanvas_MouseMove"
+                                    Width="256"
+                                    Height="400"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                />
+                        </ScrollViewer>
                     </Grid>
                 </Border>
             </ScrollViewer>
