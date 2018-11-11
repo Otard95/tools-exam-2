@@ -61,8 +61,8 @@ namespace LevelEditor.ViewModel {
             get => _sizeExp;
             set
             {
-                _sizeExp = value;
-                _tileset.Dimension = (int) Math.Pow(2, SizeExp);
+                Set(ref _sizeExp, value);
+                Dimension = (int) Math.Pow(2, SizeExp);
             }
         }
 

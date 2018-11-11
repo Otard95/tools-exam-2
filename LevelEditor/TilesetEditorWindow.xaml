@@ -21,10 +21,10 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1,1,1,1" Width="798">
                 <Button Content="Open File" Width="190" Command="{Binding BrowseCommand}" Height="30"/>
                 <Label Content="Slice mode" Margin="20,0,0,0"/>
-                <ComboBox HorizontalAlignment="Center" Width="190" Height="20" SelectedIndex="{Binding SelectedSliceMode}" ItemsSource="{Binding SliceModeChoices}"/>
+                <ComboBox HorizontalAlignment="Center" Width="190" Height="20" SelectedIndex="{Binding Path=SelectedSliceMode}" ItemsSource="{Binding Path=SliceModeChoices}"/>
                 <Label Content="Size" Margin="20,0,0,0"/>
-                <Slider Minimum="4" SmallChange="1" Width="150" VerticalAlignment="Center" Value="{Binding SizeExp}" Maximum="8"/>
-                <TextBox Height="22" TextWrapping="Wrap" Text="{Binding Dimension, Mode=OneWay}" Width="52"/>
+                <Slider Minimum="4" SmallChange="1" Width="150" VerticalAlignment="Center" Value="{Binding Path=SizeExp}" Maximum="8"/>
+                <TextBox Height="22" TextWrapping="Wrap" Text="{Binding Path=Dimension}" Width="52"/>
             </StackPanel>
         </Border>
     </Grid>
