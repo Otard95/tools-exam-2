@@ -44,6 +44,9 @@ namespace LevelEditor.Views
             ViewModel.Canvas = CanvasElement;
             ViewModel.TileSetCanvas = TileSetCanvas;
             ViewModel.PropertyChanged += ViewModelOnPropertyChanged;
+            var cache = new BitmapCache();
+            TileSetCanvas.CacheMode = cache;
+            CanvasElement.CacheMode = cache;
             Render();
         }
 
@@ -94,12 +97,13 @@ namespace LevelEditor.Views
                 SliceRectangle.X = x;
                 SliceRectangle.Y = y;
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
-                var tile = new Image
-                {
-                    Height = dimension,
-                    Width = dimension,
-                    Source = tileSource
-                };
+                var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
+                //var tile = new Image
+                //{
+                //    Height = dimension,
+                //    Width = dimension,
+                //    Source = tileSource
+                //};
                 Canvas.SetTop(tile, y);
                 Canvas.SetLeft(tile, x);
                 CanvasElement.Children.Add(tile);
@@ -197,11 +201,8 @@ namespace LevelEditor.Views
                 SliceRectangle.X = tileKey.X * dimension;
                 SliceRectangle.Y = tileKey.Y * dimension;
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
-                var tile = new Image {
-                    Height = dimension,
-                    Width = dimension,
-                    Source = tileSource
-                };
+                var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
+
 
                 var coordinate = new TileCoordinate(x, y);
 

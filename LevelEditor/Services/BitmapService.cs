@@ -6,10 +6,12 @@ using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using LevelEditor.Domain.Exceptions;
 using LevelEditor.Models;
 using Newtonsoft.Json;
+using Image = System.Windows.Controls.Image;
 
 namespace LevelEditor.Services {
     public class BitmapService {
@@ -19,20 +21,23 @@ namespace LevelEditor.Services {
 
         private Dictionary<string, Bitmap> BitmapFactory { get; set; }
         private Dictionary<SliceKey, BitmapSource> BitmapSourceFactory { get; set; }
+        private Dictionary<SliceKey, Image> ImageFactory { get; set; }
+
 
         private BitmapService()
         {
             BitmapFactory = new Dictionary<string, Bitmap>();
             BitmapSourceFactory = new Dictionary<SliceKey, BitmapSource>();
+            ImageFactory = new Dictionary<SliceKey, Image>();
         }
 
-        ~BitmapService()
-        {
-            foreach (var bitmapFactoryValue in BitmapFactory.Values)
-            {
-                bitmapFactoryValue.Dispose();
-            }
-        }
+        //~BitmapService()
+        //{
+        //    foreach (var bitmapFactoryValue in BitmapFactory.Values)
+        //    {
+        //        bitmapFactoryValue.Dispose();
+        //    }
+        //}
 
         private static BitmapSource BitmapToBitmapSource(Bitmap source, Int32Rect? rect = null) {
             return Imaging.CreateBitmapSourceFromHBitmap(
@@ -52,7 +57,6 @@ namespace LevelEditor.Services {
                     return croppedBitmapSource;
                 if (!BitmapFactory.TryGetValue(bitmapSourcePath, out var bitMap))
                     BitmapFactory.Add(bitmapSourcePath, (bitMap = new Bitmap(bitmapSourcePath)));
-
                 if (area.HasValue)
                 {
                     var bitmapSource
@@ -111,6 +115,23 @@ namespace LevelEditor.Services {
                     $"{ContentPath.GetHashCode().ToString()},{(Rect.HasValue ? Rect.Value.GetHashCode().ToString() : "NULL")}"
                         .GetHashCode();
             }
+        }
+
+        public Image GetImage(string tileKeyContentPath, int dimension, Rectangle? sliceRectangle, BitmapSource tileSource)
+        {
+            var key = new SliceKey(tileKeyContentPath, sliceRectangle);
+            if (ImageFactory.TryGetValue(key, out var image))
+                return image;
+
+            var tile = new Image {
+                Height = dimension,
+                Width = dimension,
+                Source = tileSource
+            };
+
+            ImageFactory.Add(key, tile);
+            return tile;
+
         }
     }
 

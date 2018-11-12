@@ -40,6 +40,5 @@ namespace LevelEditor.Services {
         {
             _subscriptions.Add(notificationCallback);
         }
-
     }
 }
