@@ -58,16 +58,16 @@ namespace LevelEditor.Services {
                 if (area.HasValue)
                 {
                     var bitmapSource
-                        = BitmapToBitmapSource(bitMap);
-                            //new Int32Rect(area.Value.X, area.Value.Y, area.Value.Width, area.Value.Height));
-                    //BitmapSourceFactory.Add(key, bitmapSource);
-                    // return bitmapSource;
+                        = BitmapToBitmapSource(bitMap, 
+                            new Int32Rect(area.Value.X, area.Value.Y, area.Value.Width, area.Value.Height));
+                    BitmapSourceFactory.Add(key, bitmapSource);
+                    return bitmapSource;
 
-                    using (var slicedBitmapPart = bitMap.Clone(area.Value, bitMap.PixelFormat)) {
-                        var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
-                        BitmapSourceFactory.Add(key, bitMapSource);
-                        return bitMapSource;
-                    }
+                    //using (var slicedBitmapPart = bitMap.Clone(area.Value, bitMap.PixelFormat)) {
+                    //    var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
+                    //    BitmapSourceFactory.Add(key, bitMapSource);
+                    //    return bitMapSource;
+                    //}
 
                 }
                 else

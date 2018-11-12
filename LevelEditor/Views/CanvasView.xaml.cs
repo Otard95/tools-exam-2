@@ -37,7 +37,7 @@ namespace LevelEditor.Views
             IsHitTestVisible = false
         };
 
-        private System.Drawing.Rectangle SliceRectangle = new System.Drawing.Rectangle(0,0,0,0);
+        private System.Drawing.Rectangle _sliceRectangle = new System.Drawing.Rectangle(0,0,0,0);
 
         public CanvasView()
         {
@@ -91,11 +91,11 @@ namespace LevelEditor.Views
                 var dimension = tileSet.Dimension;
                 var x = tileSet.Dimension * coordinate.X;
                 var y = tileSet.Dimension * coordinate.Y;
-                SliceRectangle.Width = dimension;
-                SliceRectangle.Height = dimension;
-                SliceRectangle.X = x;
-                SliceRectangle.Y = y;
-                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
+                _sliceRectangle.Width = dimension;
+                _sliceRectangle.Height = dimension;
+                _sliceRectangle.X = x;
+                _sliceRectangle.Y = y;
+                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, _sliceRectangle);
                 // var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
                 var tile = new Image {
                     Height = dimension,
@@ -141,8 +141,19 @@ namespace LevelEditor.Views
 
             if (!(e.Source is Image img))
                 return;
+            var dimension = ViewModel.Map.Dimension;
+            var position = e.GetPosition(sender as Canvas);
+            var newMouseCoordinate = new TileCoordinate(
+                x: (int)(position.X / dimension),
+                y: (int)(position.Y / dimension)
+            );
+            _sliceRectangle.X = newMouseCoordinate.X * dimension;
+            _sliceRectangle.Y = newMouseCoordinate.Y * dimension;
+            _sliceRectangle.Width = dimension;
+            _sliceRectangle.Height = dimension;
+
             var tileKey = ViewModel.SelectedTileSet.TileKeys.FirstOrDefault(tk =>
-                BitmapService.Instance.GetBitmapSource(tk.ContentPath) == img.Source);
+                BitmapService.Instance.GetBitmapSource(tk.ContentPath, _sliceRectangle) == img.Source);
             if (tileKey == null)
                 return;
             ViewModel.SelectedTileSetTilePosition = ViewModel.LastTileSetMouseCoordinate;
@@ -165,13 +176,13 @@ namespace LevelEditor.Views
             if (!IsNewTileCoordinate(newMouseCoordinate, ViewModel.LastTileSetMouseCoordinate)) return;
             ViewModel.LastTileSetMouseCoordinate = newMouseCoordinate;
 
-            RenderTileSet();
-
             var tileSetMark = _tileSetMark;
             tileSetMark.Height = dimension;
             tileSetMark.Width = dimension;
             Canvas.SetTop(tileSetMark, dimension * newMouseCoordinate.Y);
             Canvas.SetLeft(tileSetMark, dimension * newMouseCoordinate.X);
+            if(TileSetCanvas.Children.Contains(_tileSetMark))
+                TileSetCanvas.Children.Remove(_tileSetMark);
             TileSetCanvas.Children.Add(tileSetMark);
         }
 
@@ -185,17 +196,17 @@ namespace LevelEditor.Views
             var maxColumns = 256 / dimension;
             var column = 0;
             var row = 0;
-            SliceRectangle.Width = tileSet.Dimension;
-            SliceRectangle.Height = tileSet.Dimension;
+            _sliceRectangle.Width = tileSet.Dimension;
+            _sliceRectangle.Height = tileSet.Dimension;
             foreach (var tileKey in tileSet.TileKeys)
             {
                 
                 var y = column == maxColumns ? (++row) : row;
                 var x = column == maxColumns ? (column = 0) : column;
 
-                SliceRectangle.X = tileKey.X * dimension;
-                SliceRectangle.Y = tileKey.Y * dimension;
-                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
+                _sliceRectangle.X = tileKey.X * dimension;
+                _sliceRectangle.Y = tileKey.Y * dimension;
+                var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, _sliceRectangle);
                 // var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
                 var tile = new Image {
                     Height = dimension,
