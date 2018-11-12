@@ -40,7 +40,6 @@ namespace LevelEditor.ViewModel {
             }
         }
 
-
         public string[] SliceModeChoices => Enum.GetNames(typeof(SliceType));
 
         public int SelectedSliceMode
@@ -71,13 +70,14 @@ namespace LevelEditor.ViewModel {
         public TilesetEditorViewModel () {
             _sizeExp = 5;
             const int dimension = 128;
-            // _tileSet = new TileSet(Guid.Empty, "New TileSetImageSource", dimension, "");
             Dimension = 128;
 
             _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
-            SliceCommand = new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0);
+            SliceCommand = new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0 &&
+                                                                            TileSetImageSource.PixelHeight % Dimension == 0 &&
+                                                                            TileSetImageSource.Width % Dimension == 0);
             
         }
 
@@ -90,18 +90,18 @@ namespace LevelEditor.ViewModel {
         private void UpdateImageSource () {
 
             // Review: We should probably be more specific with the naming.
-            //var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            //var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
-            //var hd = (int)nx;
-            //var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
-            //var wd = (int)ny;
+            var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
+            var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
+            var hd = (int)nx;
+            var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
+            var wd = (int)ny;
 
-            //if (hd != nx || wd != ny) {
-            //    WorkingFile = PrevWorkingFile;
-            //    return;
-            //}
+            if (hd != nx || wd != ny) {
+                WorkingFile = PrevWorkingFile;
+                return;
+            }
 
-            //PrevWorkingFile = WorkingFile;
+            PrevWorkingFile = WorkingFile;
         }
 
         public void SliceTileSet()
