@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LevelEditor.Models;
 using LevelEditor.Services;
@@ -59,8 +60,6 @@ namespace LevelEditor.Views
                 case nameof(ViewModel.SelectedTileId): RenderTileSet();
                 break;
             }
-
-            Debug.WriteLine(e.PropertyName);
         }
 
         private void OnNewTileSet()
@@ -97,13 +96,12 @@ namespace LevelEditor.Views
                 SliceRectangle.X = x;
                 SliceRectangle.Y = y;
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
-                var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
-                //var tile = new Image
-                //{
-                //    Height = dimension,
-                //    Width = dimension,
-                //    Source = tileSource
-                //};
+                // var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
+                var tile = new Image {
+                    Height = dimension,
+                    Width = dimension,
+                    Source = tileSource
+                };
                 Canvas.SetTop(tile, y);
                 Canvas.SetLeft(tile, x);
                 CanvasElement.Children.Add(tile);
@@ -191,24 +189,27 @@ namespace LevelEditor.Views
             SliceRectangle.Height = tileSet.Dimension;
             foreach (var tileKey in tileSet.TileKeys)
             {
+                
+                var y = column == maxColumns ? (++row) : row;
+                var x = column == maxColumns ? (column = 0) : column;
 
-                //var y = column == maxColumns ? ++row : row;
-                //column = (column + 1) % maxColumns;
-                //var x = column;
-
-                var y = column == maxColumns ? (row++) : row;
-                var x = column == maxColumns ? (column = 0) : column++;
                 SliceRectangle.X = tileKey.X * dimension;
                 SliceRectangle.Y = tileKey.Y * dimension;
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
-                var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
-
+                // var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
+                var tile = new Image {
+                    Height = dimension,
+                    Width = dimension,
+                    Source = tileSource
+                };
 
                 var coordinate = new TileCoordinate(x, y);
 
                 Canvas.SetTop(tile, dimension * coordinate.Y);
                 Canvas.SetLeft(tile, dimension * coordinate.X);
                 TileSetCanvas.Children.Add(tile);
+
+                column++;
             }
 
             if (TileSetTileIsSelected()) {
