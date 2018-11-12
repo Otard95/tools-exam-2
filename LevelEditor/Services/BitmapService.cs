@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
@@ -33,11 +34,11 @@ namespace LevelEditor.Services {
             }
         }
 
-        private static BitmapSource BitmapToBitmapSource(Bitmap source) {
+        private static BitmapSource BitmapToBitmapSource(Bitmap source, Int32Rect? rect = null) {
             return Imaging.CreateBitmapSourceFromHBitmap(
                 source.GetHbitmap(),
                 IntPtr.Zero,
-                Int32Rect.Empty,
+                rect ?? Int32Rect.Empty,
                 BitmapSizeOptions.FromEmptyOptions());
         }
 
@@ -54,11 +55,16 @@ namespace LevelEditor.Services {
 
                 if (area.HasValue)
                 {
-                    using (var slicedBitmapPart = bitMap.Clone(area.Value, bitMap.PixelFormat)) {
-                        var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
-                        BitmapSourceFactory.Add(key, bitMapSource);
-                        return bitMapSource;
-                    }
+                    var bitmapSource
+                        = BitmapToBitmapSource(bitMap,
+                            new Int32Rect(area.Value.X, area.Value.Y, area.Value.Width, area.Value.Height));
+                    BitmapSourceFactory.Add(key, bitmapSource);
+                    return bitmapSource;
+                    //using (var slicedBitmapPart = bitMap.Clone(area.Value, bitMap.PixelFormat)) {
+                    //    var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
+                    //    BitmapSourceFactory.Add(key, bitMapSource);
+                    //    return bitMapSource;
+                    //}
 
                 }
                 else
@@ -101,10 +107,9 @@ namespace LevelEditor.Services {
 
             public override int GetHashCode()
             {
-                unchecked
-                {
-                    return ((ContentPath != null ? ContentPath.GetHashCode() : 0) * 397) ^ Rect.GetHashCode();
-                }
+                return 
+                    $"{ContentPath.GetHashCode().ToString()},{(Rect.HasValue ? Rect.Value.GetHashCode().ToString() : "NULL")}"
+                        .GetHashCode();
             }
         }
     }

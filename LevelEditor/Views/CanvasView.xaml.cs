@@ -185,12 +185,17 @@ namespace LevelEditor.Views
             var row = 0;
             SliceRectangle.Width = tileSet.Dimension;
             SliceRectangle.Height = tileSet.Dimension;
-            foreach (var tileKey in tileSet.TileKeys) {
+            foreach (var tileKey in tileSet.TileKeys)
+            {
 
-                var y = column > maxColumns ? (++row) : row;
-                var x = column > maxColumns ? (column = 0) : column++;
-                SliceRectangle.X = x * dimension;
-                SliceRectangle.Y = y * dimension;
+                //var y = column == maxColumns ? ++row : row;
+                //column = (column + 1) % maxColumns;
+                //var x = column;
+
+                var y = column == maxColumns ? (row++) : row;
+                var x = column == maxColumns ? (column = 0) : column++;
+                SliceRectangle.X = tileKey.X * dimension;
+                SliceRectangle.Y = tileKey.Y * dimension;
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, SliceRectangle);
                 var tile = new Image {
                     Height = dimension,
