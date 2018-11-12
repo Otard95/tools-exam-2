@@ -97,7 +97,6 @@
     <Compile Include="Domain\TileType.cs" />
     <Compile Include="Models\TileSet.cs" />
     <Compile Include="Services\JsonService.cs" />
-    <Compile Include="Models\TileSetKey.cs" />
     <Compile Include="Services\TileSetService.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -153,6 +152,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
