@@ -30,7 +30,7 @@ namespace LevelEditor.Services {
             ImageFactory = new Dictionary<SliceKey, Image>();
         }
 
-        private static BitmapSource BitmapSourceFromPath(string path, Int32Rect? rect = null)
+        private static BitmapSource BitmapSourceFromPath(string path)
         {
             var image = new BitmapImage();
             using (var stream = new FileStream(path, FileMode.Open)) {

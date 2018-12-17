@@ -6,12 +6,24 @@ namespace LevelEditor.Models
 {
     public class TileCoordinate : IEquatable<TileCoordinate>
     {
-        public TileCoordinate(int x, int y)
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (X * 397) ^ Y;
+            }
+        }
+
+        public TileCoordinate(int x, int y, int tileSetMapId, int tileId)
         {
             X = x;
             Y = y;
+            TileSetMapId = tileSetMapId;
+            TileId = tileId;
         }
 
+        public int TileId { get; set; }
+        public int TileSetMapId { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
 
@@ -28,11 +40,6 @@ namespace LevelEditor.Models
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return Equals((TileCoordinate) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return $"{X},{Y}".GetHashCode();
         }
 
         public static bool operator ==(TileCoordinate a, TileCoordinate b)

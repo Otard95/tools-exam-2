@@ -146,18 +146,21 @@
                             </Grid>
                         </Border>
 
-                        <ScrollViewer Grid.Row="7" Width="271" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"  Grid.Column="0">
+                        <ScrollViewer Width="256" Height="400" Grid.Row="7" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"  Grid.Column="0">
+                            <!--Width="271"-->
                             <Canvas
                                     x:Name="TileSetCanvas" 
                                     MouseDown="TileSetCanvas_MouseDown"
                                     Background="White" 
                                     MouseMove="TileSetCanvas_MouseMove"
-                                    Width="256"
-                                    Height="400"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
+                                    Width="400px"
+                                    Height="400px"
                                 />
                         </ScrollViewer>
+                        <!--Width="256"-->
+                        <!--Height="400"-->
                     </Grid>
                 </Border>
             </ScrollViewer>

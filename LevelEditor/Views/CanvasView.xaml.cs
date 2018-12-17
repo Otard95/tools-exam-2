@@ -85,9 +85,10 @@ namespace LevelEditor.Views
 
             foreach (var coordinate in ViewModel.Map.CoordinateMap)
             {
-                var tileMapping = ViewModel.Map.GetTileMapping(coordinate.X, coordinate.Y);
-                var tileSet = ViewModel.Map.GetTileSetFromMapping(tileMapping);
-                var tileKey = ViewModel.Map.GetTileKey(tileMapping, tileSet);
+                //var tileMapping = ViewModel.Map.GetTileMapping(coordinate.X, coordinate.Y);
+                var tileSet = ViewModel.Map.TileSetMap[coordinate.TileSetMapId];
+
+                var tileKey = ViewModel.Map.GetTileKey(coordinate, tileSet);
                 var dimension = tileSet.Dimension;
                 var x = tileSet.Dimension * coordinate.X;
                 var y = tileSet.Dimension * coordinate.Y;
@@ -115,7 +116,9 @@ namespace LevelEditor.Views
             var position = e.GetPosition(sender as Canvas);
             var newMouseCoordinate = new TileCoordinate(
                 x: (int) (position.X / dimension),
-                y: (int) (position.Y / dimension)
+                y: (int) (position.Y / dimension),
+                tileSetMapId: 0,
+                tileId: 0
             );
 
             if (!IsNewTileCoordinate(newMouseCoordinate, ViewModel.LastMouseCoordinate)) return;
@@ -145,7 +148,9 @@ namespace LevelEditor.Views
             var position = e.GetPosition(sender as Canvas);
             var newMouseCoordinate = new TileCoordinate(
                 x: (int)(position.X / dimension),
-                y: (int)(position.Y / dimension)
+                y: (int)(position.Y / dimension),
+                tileSetMapId:0,
+                tileId: 0
             );
             _sliceRectangle.X = newMouseCoordinate.X * dimension;
             _sliceRectangle.Y = newMouseCoordinate.Y * dimension;
@@ -172,7 +177,9 @@ namespace LevelEditor.Views
             var position = e.GetPosition(sender as Canvas);
             var newMouseCoordinate = new TileCoordinate(
                 x: (int)(position.X / dimension),
-                y: (int)(position.Y / dimension)
+                y: (int)(position.Y / dimension),
+                tileSetMapId: 0,
+                tileId: 0
             );
 
 
@@ -196,34 +203,24 @@ namespace LevelEditor.Views
 
             var dimension = tileSet.Dimension;
             TileSetCanvas.Children.Clear();
-            var maxColumns = 256 / dimension;
-            var column = 0;
-            var row = 0;
             _sliceRectangle.Width = tileSet.Dimension;
             _sliceRectangle.Height = tileSet.Dimension;
             foreach (var tileKey in tileSet.TileKeys)
             {
-                
-                var y = column == maxColumns ? (++row) : row;
-                var x = column == maxColumns ? (column = 0) : column;
-
                 _sliceRectangle.X = tileKey.X * dimension;
                 _sliceRectangle.Y = tileKey.Y * dimension;
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, _sliceRectangle);
-                // var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
                 var tile = new Image {
                     Height = dimension,
                     Width = dimension,
                     Source = tileSource
                 };
 
-                var coordinate = new TileCoordinate(x, y);
+                // var coordinate = new TileCoordinate(tileKey.X, tileKey.Y, 0, 0);
 
-                Canvas.SetTop(tile, dimension * coordinate.Y);
-                Canvas.SetLeft(tile, dimension * coordinate.X);
+                Canvas.SetTop(tile, dimension * tileKey.Y);
+                Canvas.SetLeft(tile, dimension * tileKey.X);
                 TileSetCanvas.Children.Add(tile);
-
-                column++;
             }
 
             if (TileSetTileIsSelected()) {
