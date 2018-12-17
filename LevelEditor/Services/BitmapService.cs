@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Windows;
@@ -37,12 +38,18 @@ namespace LevelEditor.Services {
             }
         }
 
-        private static BitmapSource BitmapToBitmapSource(Bitmap source, Int32Rect? rect = null) {
-            return Imaging.CreateBitmapSourceFromHBitmap(
-                source.GetHbitmap(),
-                IntPtr.Zero,
-                rect ?? Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
+        private static BitmapSource BitmapSourceFromPath(string path, Int32Rect? rect = null)
+        {
+            var image = new BitmapImage();
+            using (var stream = new FileStream(path, FileMode.Open)) {
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.StreamSource = stream;
+                image.EndInit();
+                image.Freeze();
+            }
+
+            return image;
         }
 
         public BitmapSource GetBitmapSource(string bitmapSourcePath, Rectangle? area = null) {
@@ -53,27 +60,25 @@ namespace LevelEditor.Services {
                 var key = new SliceKey(bitmapSourcePath, area);
                 if (BitmapSourceFactory.TryGetValue(key, out var croppedBitmapSource))
                     return croppedBitmapSource;
-                if (!BitmapFactory.TryGetValue(bitmapSourcePath, out var bitMap))
-                    BitmapFactory.Add(bitmapSourcePath, (bitMap = new Bitmap(bitmapSourcePath)));
+
                 if (area.HasValue)
                 {
-                    var bitmapSource
-                        = BitmapToBitmapSource(bitMap, 
-                            new Int32Rect(area.Value.X, area.Value.Y, area.Value.Width, area.Value.Height));
-                    BitmapSourceFactory.Add(key, bitmapSource);
-                    return bitmapSource;
+                    var nonCroppedkey = new SliceKey(bitmapSourcePath, null);
+                    if (!BitmapSourceFactory.TryGetValue(nonCroppedkey, out var bitmapSource))
+                    {
+                        bitmapSource = BitmapSourceFromPath(bitmapSourcePath);
+                        BitmapSourceFactory.Add(nonCroppedkey, bitmapSource);
+                    }
 
-                    //using (var slicedBitmapPart = bitMap.Clone(area.Value, bitMap.PixelFormat)) {
-                    //    var bitMapSource = BitmapToBitmapSource(slicedBitmapPart);
-                    //    BitmapSourceFactory.Add(key, bitMapSource);
-                    //    return bitMapSource;
-                    //}
+                    var croppedBitMap = new CroppedBitmap(bitmapSource, new Int32Rect(area.Value.X, area.Value.Y, area.Value.Width, area.Value.Height));
+                    BitmapSourceFactory.Add(key, croppedBitMap);
+                    return croppedBitMap;
 
                 }
                 else
                 {
 
-                    var bitMapSource = BitmapToBitmapSource(bitMap);
+                    var bitMapSource = BitmapSourceFromPath(bitmapSourcePath);
                     BitmapSourceFactory.Add(key, bitMapSource);
                     return bitMapSource;
                 }
