@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using LevelEditor.Domain;
-using Rectangle = System.Drawing.Rectangle;
 
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : ViewModelBase
@@ -25,7 +24,6 @@ namespace LevelEditor.ViewModel {
         public RelayCommand SliceCommand { get; private set; }
 
         public Canvas Canvas { get; set; }
-
         #region UI property bindings
 
         public BitmapSource TileSetImageSource => BitmapService.Instance.GetBitmapSource(WorkingFile);
@@ -48,43 +46,34 @@ namespace LevelEditor.ViewModel {
             set => _sliceType = (SliceType) value;
         }
 
-        public int SizeExp
-        {
-            get => _sizeExp;
-            set
-            {
-                Set(ref _sizeExp, value);
-                Dimension = (int) Math.Pow(2, SizeExp);
-            }
-        }
-
         public int Dimension
         {
             get => _dimension;
             set => Set(ref _dimension, value);
         }
+
+        public int MaxDimension => TileDimensionRules.NumOfDimensions-1;
         public TileSet TileSet { get; private set; }
 
         #endregion
 
         public TilesetEditorViewModel () {
             _sizeExp = 5;
-            const int dimension = 128;
             Dimension = 128;
 
-            _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg}"};
+            _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg};*.{FileExtension.Bmp}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
-            SliceCommand = new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0 &&
-                                                                            TileSetImageSource.PixelHeight % Dimension == 0 &&
-                                                                            TileSetImageSource.Width % Dimension == 0);
-            
+            SliceCommand =
+                new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0); //&&
+            //TileSetImageSource.PixelHeight % Dimension == 0 &&
+            //TileSetImageSource.Width % Dimension == 0);
+
         }
 
         private void StartBrowse () {
             if (_fileDialog.ShowDialog() != true) return;
             WorkingFile = _fileDialog.FileName;
-            // UpdateImageSource();
         }
 
         private void UpdateImageSource () {
@@ -112,16 +101,11 @@ namespace LevelEditor.ViewModel {
             var dimension = Dimension;
             var rowCount = (int) height / dimension;
             var columnCount = (int) width / dimension;
-            //var cellCount = rowCount * columnCount;
-            //var sliceRectangle = new Rectangle(0, 0, dimension, dimension);
 
             for (var row = 0; row < rowCount; row++)
             {
-                //sliceRectangle.Y = row;
                 for (var column = 0; column < columnCount; column++)
                 {
-                    //sliceRectangle.X = column;
-                    //BitmapService.Instance.GetBitmapSource(WorkingFile, sliceRectangle);
                     tileSet.AddTile(new TileKey
                     {
                         X = column,

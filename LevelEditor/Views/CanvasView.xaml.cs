@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using LevelEditor.ViewModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -26,6 +27,8 @@ namespace LevelEditor.Views
             Fill = new SolidColorBrush(Color.FromArgb(0x22, 0xFF, 0xFF, 0xFF)),
             IsHitTestVisible = false
         };
+
+        private Image _tileMark;
 
         private readonly Rectangle _tileSetMark = new Rectangle {
             Fill = new SolidColorBrush(Color.FromArgb(0x22, 0x00, 0x00, 0x00)),
@@ -85,7 +88,6 @@ namespace LevelEditor.Views
 
             foreach (var coordinate in ViewModel.Map.CoordinateMap)
             {
-                //var tileMapping = ViewModel.Map.GetTileMapping(coordinate.X, coordinate.Y);
                 var tileSet = ViewModel.Map.TileSetMap[coordinate.TileSetMapId];
 
                 var tileKey = ViewModel.Map.GetTileKey(coordinate, tileSet);
@@ -109,14 +111,13 @@ namespace LevelEditor.Views
             }
         }
 
-        private void CanvasElement_MouseMove(object sender, MouseEventArgs e)
-        {
+        private void CanvasElement_MouseMove(object sender, MouseEventArgs e) {
 
             var dimension = ViewModel.Map.Dimension;
             var position = e.GetPosition(sender as Canvas);
             var newMouseCoordinate = new TileCoordinate(
-                x: (int) (position.X / dimension),
-                y: (int) (position.Y / dimension),
+                x: (int)(position.X / dimension),
+                y: (int)(position.Y / dimension),
                 tileSetMapId: 0,
                 tileId: 0
             );
@@ -124,12 +125,24 @@ namespace LevelEditor.Views
             if (!IsNewTileCoordinate(newMouseCoordinate, ViewModel.LastMouseCoordinate)) return;
             ViewModel.LastMouseCoordinate = newMouseCoordinate;
 
+            Render();
+            RenderTileCursor(dimension, newMouseCoordinate);
+        }
+
+        private void RenderTileCursor(int dimension, TileCoordinate newMouseCoordinate) {
             _mark.Height = dimension;
             _mark.Width = dimension;
-            Render();
-            Canvas.SetTop(_mark, dimension * newMouseCoordinate.Y);
-            Canvas.SetLeft(_mark, dimension * newMouseCoordinate.X);
-            CanvasElement.Children.Add(_mark);
+            RenderCursorElement(_mark, dimension, newMouseCoordinate);
+            if (_tileMark != null) {
+                RenderCursorElement(_tileMark, dimension, newMouseCoordinate);
+            }
+        }
+
+        private void RenderCursorElement(UIElement mark, int dimension, TileCoordinate newMouseCoordinate) {
+            Canvas.SetTop(mark, dimension * newMouseCoordinate.Y);
+            Canvas.SetLeft(mark, dimension * newMouseCoordinate.X);
+
+            CanvasElement.Children.Add(mark);
         }
 
         private static bool IsNewTileCoordinate(TileCoordinate newMouseCoordinate, TileCoordinate lastMouseCoordinate)
@@ -160,12 +173,21 @@ namespace LevelEditor.Views
             var tileKey = ViewModel.SelectedTileSet.TileKeys
                 .FirstOrDefault(tk =>
                     tk.ContentPath == ViewModel.SelectedTileSet.ContentPath && tk.X == newMouseCoordinate.X && tk.Y == newMouseCoordinate.Y);
-            //var tileKey = ViewModel.SelectedTileSet.TileKeys.FirstOrDefault(tk =>
-            //    BitmapService.Instance.GetBitmapSource(tk.ContentPath, _sliceRectangle) == img.Source);
+
             if (tileKey == null)
                 return;
             ViewModel.SelectedTileSetTilePosition = ViewModel.LastTileSetMouseCoordinate;
             ViewModel.SelectedTileId = tileKey.Id;
+
+            _sliceRectangle.X = tileKey.X * dimension;
+            _sliceRectangle.Y = tileKey.Y * dimension;
+            var source = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, _sliceRectangle);
+            _tileMark = new Image {
+                Height = dimension,
+                Width = dimension,
+                Source = source,
+                Opacity = .3
+            };
         }
 
         private void TileSetCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -198,11 +220,12 @@ namespace LevelEditor.Views
 
         private void RenderTileSet() {
             var tileSet = ViewModel.SelectedTileSet;
+            TileSetCanvas.Children.Clear();
             if (tileSet == null)
                 return;
 
             var dimension = tileSet.Dimension;
-            TileSetCanvas.Children.Clear();
+
             _sliceRectangle.Width = tileSet.Dimension;
             _sliceRectangle.Height = tileSet.Dimension;
             var maxWidth = 0;

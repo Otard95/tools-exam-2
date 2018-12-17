@@ -23,14 +23,18 @@ namespace LevelEditor {
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            WindowState = WindowState.Maximized;
+        }
+
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 
             if (TileSetIsNotLoaded()) return;
 
             ClearPreviousRender();
 
-            var height = ViewModel.TileSetImageSource.PixelHeight;
-            var width = ViewModel.TileSetImageSource.PixelWidth;
+            var height = ViewModel.TileSetImageSource.Height;
+            var width = ViewModel.TileSetImageSource.Width;
             var dimension = ViewModel.Dimension;
 
             var numHorizontalLines = (int)Math.Ceiling(height * 1d / ViewModel.Dimension);

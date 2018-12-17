@@ -10,5 +10,6 @@ namespace LevelEditor.Domain {
         public const string Json = "json";
         public const string Png = "png";
         public const string Jpg = "jpg";
+        public const string Bmp = "bmp";
     }
 }

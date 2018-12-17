@@ -1,0 +1,48 @@
+﻿<Window x:Class="LevelEditor.Views.CreateMapDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LevelEditor.Views"
+        xmlns:domain="clr-namespace:LevelEditor.Domain"
+        mc:Ignorable="d"
+        Title="CreateMapDialog" MaxHeight="200" Height="200" MinHeight="200" Width="453" MaxWidth="453" MinWidth="453">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Height="70">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,0" Content="Map Name:" Width="90" />
+                <TextBox Grid.Column="1" x:Name="NameTextBox" Margin="10,0,0,0" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="150"/>
+            </Grid>
+            <Grid Grid.Row="1" Height="69">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Center"  Content="Tile Dimension:" Width="90" />
+                <ComboBox Grid.Column="1" x:Name="DimensionSelectBox" Margin="10,0,0,0" HorizontalAlignment="Left" Height="23" Text="TextBox" VerticalAlignment="Center" ItemsSource="{Binding Source={x:Static domain:TileDimensionRules.AllowedDimensions}, Mode=OneWay}" Width="150"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Height="30" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="155"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 5, 0" Width="150"/>
+            <Button Grid.Column="2" x:Name="CreateButton" Content="Create" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 5, 0" Width="150"/>
+        </Grid>
+
+    </Grid>
+</Window>

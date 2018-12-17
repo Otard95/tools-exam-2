@@ -76,6 +76,7 @@
     </ApplicationDefinition>
     <Compile Include="Domain\FileExtension.cs" />
     <Compile Include="Domain\MapToolState.cs" />
+    <Compile Include="Domain\TileDimensionRules.cs" />
     <Compile Include="Domain\TileRules.cs" />
     <Compile Include="Models\FileKey.cs" />
     <Compile Include="Models\TileKey.cs" />
@@ -98,6 +99,8 @@
     <Compile Include="Models\TileSet.cs" />
     <Compile Include="Services\JsonService.cs" />
     <Compile Include="Services\TileSetService.cs" />
+    <Compile Include="ValueConverters\DimensionToInt.cs" />
+    <Compile Include="ValueConverters\IntToDimension.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Domain\SliceType.cs" />
@@ -108,6 +111,9 @@
     </Compile>
     <Compile Include="TilesetEditorWindow.xaml.cs">
       <DependentUpon>TilesetEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateMapDialog.xaml.cs">
+      <DependentUpon>CreateMapDialog.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TilesetEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateMapDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

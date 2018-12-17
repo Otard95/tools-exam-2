@@ -20,7 +20,7 @@
             <Menu Background="DarkGray">
                 <MenuItem Header="File">
                     <MenuItem Header="New">
-                        <MenuItem Header="TileMap"/>
+                        <MenuItem Header="TileMap" Command="{Binding Path=CreateNewMapCommand}"/>
                     </MenuItem>
                     <MenuItem Header="Import">
                         <MenuItem Header="TileMap" Command="{Binding Path=LoadCommand}"/>
@@ -93,7 +93,7 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <Label HorizontalAlignment="Left" Grid.Column="0" Content="Dimension:" Width="Auto"/>
-                                    <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Map.Dimension}"/>
+                                    <TextBlock Background="DarkGray" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Dimension}"/>
                                     <Label HorizontalAlignment="Left" Grid.Column="2" Content="Height:" Width="Auto"/>
                                     <TextBlock Background="DarkGray" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" MinWidth="20" Width="Auto" Text="{Binding Path=Height}"/>
                                     <Label HorizontalAlignment="Left" Grid.Column="4" Content="Width:" Width="Auto" />
@@ -131,7 +131,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Content="New TileSet" Command="{Binding Path=CreateNewTileSetCommand}"/>
+                                <Button Grid.Column="0" Content="Launch TileSet Editor" Command="{Binding Path=CreateNewTileSetCommand}"/>
                                 <Button Grid.Column="1" Content="Import TileSet" Command="{Binding Path=ImportTileSetCommand}"/>
                             </Grid>
                         </Border>
@@ -147,7 +147,6 @@
                         </Border>
 
                         <ScrollViewer Width="256" Height="400" Grid.Row="7" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"  Grid.Column="0">
-                            <!--Width="271"-->
                             <Canvas
                                     x:Name="TileSetCanvas" 
                                     MouseDown="TileSetCanvas_MouseDown"
@@ -159,8 +158,6 @@
                                     Height="{Binding TileSetHeight}"
                                 />
                         </ScrollViewer>
-                        <!--Width="256"-->
-                        <!--Height="400"-->
                     </Grid>
                 </Border>
             </ScrollViewer>

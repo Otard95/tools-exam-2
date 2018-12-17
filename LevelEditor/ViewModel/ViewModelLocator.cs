@@ -11,6 +11,7 @@
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using LevelEditor.Domain;
 using Microsoft.Practices.ServiceLocation;
 
 namespace LevelEditor.ViewModel {

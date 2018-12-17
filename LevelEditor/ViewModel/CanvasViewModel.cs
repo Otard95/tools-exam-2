@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight.Command;
 using LevelEditor.Domain;
 using LevelEditor.Models;
 using LevelEditor.Services;
+using LevelEditor.Views;
 
 namespace LevelEditor.ViewModel
 {
@@ -28,13 +29,25 @@ namespace LevelEditor.ViewModel
         private int _tileSetHeight;
         public Canvas Canvas { get; set; }
         public TileMap Map { get; set; }
+        public int[] Dimensions => TileDimensionRules.AllowedDimensions;
         public RelayCommand SaveAsCommand { get; set; }
         public RelayCommand SaveCommand { get; set; }
         public RelayCommand LoadCommand { get; set; }
+        public RelayCommand CreateNewMapCommand { get; set; }
         public RelayCommand ImportTileSetCommand { get; set; }
         public RelayCommand CreateNewTileSetCommand { get; set; }
         public RelayCommand SelectPlaceToolCommand { get; set; }
         public RelayCommand SelectEraserToolCommand { get; set; }
+
+        public int Dimension
+        {
+            get => Map.Dimension;
+            set
+            {
+                Map.Dimension = value;
+                RaisePropertyChanged(nameof(Dimension));
+            }
+        }
 
         public MapToolState State
         {
@@ -112,7 +125,7 @@ namespace LevelEditor.ViewModel
         public Canvas TileSetCanvas { get; set; }
         public TileCoordinate SelectedTileSetTilePosition { get; set; }
 
-        public TileSet[] TileSets => TileSetService.Instance.GetAllTileSets();
+        public TileSet[] TileSets => TileSetService.Instance.GetAllTileSets().ToList().Where(ts => ts.Dimension == Dimension).ToArray();
 
         public int TileSetWidth
         {
@@ -142,7 +155,21 @@ namespace LevelEditor.ViewModel
                     Map = map;
                     SavedFileName = fullFilePath;
                     SelectedTileSet = Map.TileSetMap.TileSets.FirstOrDefault();
+                    Map.TileSetMap.TileSets.ForEach(TileSetService.Instance.AddTileSet);
+                    RaisePropertyChanged(nameof(TileSets));
                 })
+            );
+            CreateNewMapCommand = new RelayCommand(
+                () =>
+                {
+
+                    var dialog = new CreateMapDialog();
+                    if (dialog.ShowDialog() == true)
+                    {
+                        Dimension = dialog.Dimension;
+                        Clear();
+                    }
+                }
             );
             ImportTileSetCommand = new RelayCommand(
                 () => FileService.OpenFile(DefaultTileSetName, FileExtension.Json, (TileSet tileSet, string fullFilePath) =>
@@ -197,5 +224,12 @@ namespace LevelEditor.ViewModel
             Map.PlaceTile(x, y, tileSet, tileKey);
         }
 
+        private void Clear()
+        {
+            Map = new TileMap(Dimension, 20, 20);
+            SelectedTileSet = null;
+            RaisePropertyChanged(nameof(TileSets));
+            RaisePropertyChanged(nameof(TileSets));
+        }
     }
 }
