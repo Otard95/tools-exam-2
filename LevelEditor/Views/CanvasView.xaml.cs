@@ -205,10 +205,19 @@ namespace LevelEditor.Views
             TileSetCanvas.Children.Clear();
             _sliceRectangle.Width = tileSet.Dimension;
             _sliceRectangle.Height = tileSet.Dimension;
+            var maxWidth = 0;
+            var maxHeight = 0;
             foreach (var tileKey in tileSet.TileKeys)
             {
                 _sliceRectangle.X = tileKey.X * dimension;
                 _sliceRectangle.Y = tileKey.Y * dimension;
+                if(_sliceRectangle.X > maxWidth)
+                {
+                    maxWidth = _sliceRectangle.X;
+                }
+                if (_sliceRectangle.Y > maxHeight) {
+                    maxHeight = _sliceRectangle.Y;
+                }
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, _sliceRectangle);
                 var tile = new Image {
                     Height = dimension,
@@ -216,16 +225,18 @@ namespace LevelEditor.Views
                     Source = tileSource
                 };
 
-                // var coordinate = new TileCoordinate(tileKey.X, tileKey.Y, 0, 0);
-
                 Canvas.SetTop(tile, dimension * tileKey.Y);
                 Canvas.SetLeft(tile, dimension * tileKey.X);
                 TileSetCanvas.Children.Add(tile);
             }
 
+            ViewModel.TileSetWidth = maxWidth + dimension;
+            ViewModel.TileSetHeight = maxHeight + dimension;
+
             if (TileSetTileIsSelected()) {
                 MarkTileSetTile(tileSet, dimension);
             }
+
         }
 
         private void MarkTileSetTile(TileSet tileSet, int dimension) {

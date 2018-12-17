@@ -24,6 +24,8 @@ namespace LevelEditor.ViewModel
         private TileSet _selectedTileSet;
         private int _selectedTile;
         private TileCoordinate _lastTileSetMouseCoordinate;
+        private int _tileSetWidth;
+        private int _tileSetHeight;
         public Canvas Canvas { get; set; }
         public TileMap Map { get; set; }
         public RelayCommand SaveAsCommand { get; set; }
@@ -111,6 +113,18 @@ namespace LevelEditor.ViewModel
         public TileCoordinate SelectedTileSetTilePosition { get; set; }
 
         public TileSet[] TileSets => TileSetService.Instance.GetAllTileSets();
+
+        public int TileSetWidth
+        {
+            get => _tileSetWidth;
+            set => Set(ref _tileSetWidth, value);
+        }
+
+        public int TileSetHeight
+        {
+            get => _tileSetHeight;
+            set => Set(ref _tileSetHeight, value);
+        }
 
 
         public CanvasViewModel() {

@@ -155,8 +155,8 @@
                                     MouseMove="TileSetCanvas_MouseMove"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Width="400px"
-                                    Height="400px"
+                                    Width="{Binding TileSetWidth}"
+                                    Height="{Binding TileSetHeight}"
                                 />
                         </ScrollViewer>
                         <!--Width="256"-->
