@@ -20,22 +20,14 @@ namespace LevelEditor.Services {
 
         public static BitmapService Instance => _instance ?? (_instance = new BitmapService());
 
-        private Dictionary<string, Bitmap> BitmapFactory { get; set; }
         private Dictionary<SliceKey, BitmapSource> BitmapSourceFactory { get; set; }
         private Dictionary<SliceKey, Image> ImageFactory { get; set; }
 
 
         private BitmapService()
         {
-            BitmapFactory = new Dictionary<string, Bitmap>();
             BitmapSourceFactory = new Dictionary<SliceKey, BitmapSource>();
             ImageFactory = new Dictionary<SliceKey, Image>();
-        }
-
-        ~BitmapService() {
-            foreach (var bitmapFactoryValue in BitmapFactory.Values) {
-                bitmapFactoryValue.Dispose();
-            }
         }
 
         private static BitmapSource BitmapSourceFromPath(string path, Int32Rect? rect = null)

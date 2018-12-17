@@ -93,10 +93,10 @@ namespace LevelEditor.Views
                 var y = tileSet.Dimension * coordinate.Y;
                 _sliceRectangle.Width = dimension;
                 _sliceRectangle.Height = dimension;
-                _sliceRectangle.X = x;
-                _sliceRectangle.Y = y;
+                _sliceRectangle.X = tileKey.X * dimension;
+                _sliceRectangle.Y = tileKey.Y * dimension;
+                
                 var tileSource = BitmapService.Instance.GetBitmapSource(tileKey.ContentPath, _sliceRectangle);
-                // var tile = BitmapService.Instance.GetImage(tileKey.ContentPath, dimension, SliceRectangle, tileSource);
                 var tile = new Image {
                     Height = dimension,
                     Width = dimension,
@@ -152,8 +152,11 @@ namespace LevelEditor.Views
             _sliceRectangle.Width = dimension;
             _sliceRectangle.Height = dimension;
 
-            var tileKey = ViewModel.SelectedTileSet.TileKeys.FirstOrDefault(tk =>
-                BitmapService.Instance.GetBitmapSource(tk.ContentPath, _sliceRectangle) == img.Source);
+            var tileKey = ViewModel.SelectedTileSet.TileKeys
+                .FirstOrDefault(tk =>
+                    tk.ContentPath == ViewModel.SelectedTileSet.ContentPath && tk.X == newMouseCoordinate.X && tk.Y == newMouseCoordinate.Y);
+            //var tileKey = ViewModel.SelectedTileSet.TileKeys.FirstOrDefault(tk =>
+            //    BitmapService.Instance.GetBitmapSource(tk.ContentPath, _sliceRectangle) == img.Source);
             if (tileKey == null)
                 return;
             ViewModel.SelectedTileSetTilePosition = ViewModel.LastTileSetMouseCoordinate;
