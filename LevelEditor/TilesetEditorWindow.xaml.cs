@@ -33,8 +33,8 @@ namespace LevelEditor {
 
             ClearPreviousRender();
 
-            var height = ViewModel.TileSetImageSource.Height;
-            var width = ViewModel.TileSetImageSource.Width;
+            var height = ViewModel.TileSetImageSource.PixelHeight;
+            var width = ViewModel.TileSetImageSource.PixelWidth;
             var dimension = ViewModel.Dimension;
 
             var numHorizontalLines = (int)Math.Ceiling(height * 1d / ViewModel.Dimension);
@@ -42,6 +42,8 @@ namespace LevelEditor {
 
             var tileSetImage = new Image {
                 Source = ViewModel.TileSetImageSource,
+                Height = height,
+                Width = width,
             };
             CanvasElement.Children.Add(tileSetImage);
 
