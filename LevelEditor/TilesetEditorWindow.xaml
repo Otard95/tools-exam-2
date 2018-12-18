@@ -59,6 +59,7 @@
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0" FontSize="18" Content="Properies"></Label>
@@ -102,6 +103,7 @@
                                 <ComboBox Grid.Column="1"/>
                             </Grid>
                         </Border>
+                        <Button Grid.Row="8" Content="Close" Margin="5,5,5,5" Click="CloseButton_Click" />
                     </Grid>
                 </Border>
             </ScrollViewer>

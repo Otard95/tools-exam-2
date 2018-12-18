@@ -103,5 +103,9 @@ namespace LevelEditor {
         private bool TileSetIsNotLoaded() {
             return string.IsNullOrEmpty(ViewModel.WorkingFile);
         }
+
+        private void CloseButton_Click (object sender, RoutedEventArgs e) {
+            Close();
+        }
     }
 }
