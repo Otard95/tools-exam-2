@@ -33,7 +33,10 @@ namespace LevelEditor {
 
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 
-            if (TileSetIsNotLoaded()) return;
+            if (TileSetIsNotLoaded()) {
+                ClearPreviousRender();
+                return;
+            }
             if (e.PropertyName != nameof(ViewModel.TileSet) && e.PropertyName != nameof(ViewModel.Dimension)) return;
 
             ClearPreviousRender();

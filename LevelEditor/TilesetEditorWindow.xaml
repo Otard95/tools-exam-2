@@ -60,6 +60,7 @@
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="35"/>
+                            <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0" FontSize="18" Content="Properies"></Label>
@@ -103,7 +104,8 @@
                                 <ComboBox Grid.Column="1" ItemsSource="{Binding ExistingTilesets}" SelectedIndex="{Binding SelectedTileSet}"/>
                             </Grid>
                         </Border>
-                        <Button Grid.Row="8" Content="Close" Margin="5,5,5,5" Click="CloseButton_Click" />
+                        <Button Grid.Row="8" Content="Delete" Margin="5,5,5,5" Command="{Binding DeleteCommand}" />
+                        <Button Grid.Row="9" Content="Close" Margin="5,5,5,5" Click="CloseButton_Click" />
                     </Grid>
                 </Border>
             </ScrollViewer>
