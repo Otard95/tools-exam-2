@@ -23,6 +23,11 @@ namespace LevelEditor {
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
+        protected override void OnActivated (EventArgs e) {
+            base.OnActivated(e);
+            ViewModel_PropertyChanged(null, null);
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             WindowState = WindowState.Maximized;
         }
