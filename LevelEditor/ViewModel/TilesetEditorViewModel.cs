@@ -24,9 +24,10 @@ namespace LevelEditor.ViewModel {
         private int _selectedTileId;
         private TileCoordinate _selectedTilePosition;
 
+
         public ICommand BrowseCommand { get; }
         public RelayCommand SliceCommand { get; }
-         
+        public RelayCommand DeleteCommand { get; set; }
         #region UI property bindings
 
         public BitmapSource TileSetImageSource {
@@ -45,9 +46,12 @@ namespace LevelEditor.ViewModel {
         public string TilesetName {
             get => TileSet != null ? TileSet.Name : string.Empty;
             set {
-                if (TileSet != null) TileSet.Name = value;
+                if (TileSet == null) return;
+                TileSet.Name = value;
                 RaisePropertyChanged(nameof(TilesetName));
+                RaisePropertyChanged(nameof(ExistingTilesets));
                 SliceCommand?.RaiseCanExecuteChanged();
+                DeleteCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -141,8 +145,33 @@ namespace LevelEditor.ViewModel {
             _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg};*.{FileExtension.Bmp}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
-            SliceCommand =
-                new RelayCommand(SliceTileSet, CanSlice);
+            SliceCommand = new RelayCommand(SliceTileSet, CanSlice);
+            DeleteCommand = new RelayCommand(DeleteTileSet, CanDelete);
+
+        }
+
+        #region Command Function
+
+        private bool CanDelete () {
+            return TileSet != null && TileSetService.Instance.Contains(TileSet.Id);
+        }
+
+        private void DeleteTileSet () {
+
+            var result = MessageBox.Show(
+                "Are you absolutely sure you want to delete this tileset? This action is irreversible.",
+                "U sure m8?",
+                MessageBoxButton.YesNo
+            );
+
+            if (result == MessageBoxResult.Yes) {
+                TileSetService.Instance.RemoveTileSet(TileSet.Id);
+                _tileSet = null;
+                _selectedTileSet = -1;
+                SelectedTileImage = null;
+                RaisePropertyChangedAll();
+            }
+            
 
         }
 
@@ -157,16 +186,9 @@ namespace LevelEditor.ViewModel {
                 MessageBox.Show($"The image you selected doesn't have the right dimension", "Oops", MessageBoxButton.OK);
                 return;
             }
-
-            var tileSet = TileSetService.Instance.GetTileSetByContentPath(_fileDialog.FileName);
-            if (tileSet == null) {
-                _tileSet = new TileSet(Guid.Empty, "New Tileset", Dimension, _fileDialog.FileName);
-                _selectedTileSet = -1;
-            } else {
-                _dimension = TileSet.Dimension;
-                _selectedTileSet = ExistingTilesets.IndexOf(TileSet.Name);
-                _tileSet = tileSet;
-            }
+            
+            _tileSet = new TileSet(Guid.Empty, "New Tileset", Dimension, _fileDialog.FileName);
+            _selectedTileSet = -1;
 
             RaisePropertyChangedAll();
 
@@ -185,8 +207,9 @@ namespace LevelEditor.ViewModel {
 
         public void SliceTileSet()
         {
-            TileSet.Clear();
-            TileSet.Dimension = Dimension;
+            TileSet tileSet = new TileSet(Guid.Empty, TileSet.Name, Dimension, TileSet.ContentPath);
+            while (TileSetService.Instance.NameExists(tileSet.Name)) { tileSet.Name = CreateNewName(tileSet.Name); }
+
             var width = TileSetImageSource.PixelWidth;
             var height = TileSetImageSource.PixelHeight;
             var rowCount = height / Dimension;
@@ -196,37 +219,42 @@ namespace LevelEditor.ViewModel {
             {
                 for (var column = 0; column < columnCount; column++)
                 {
-                    TileSet.AddTile(new TileKey
+                    tileSet.AddTile(new TileKey
                     {
                         X = column,
                         Y = row
                     });
                 }
             }
-
-            try {
-                TileSetService.Instance.GetTileSet(TileSet.Id);
-            } catch (Exception e) {
-                if (TileSetService.Instance.AddTileSet(TileSet)) {
-                    MessageBox.Show($"The new tileset '{TilesetName}' was saved successfully.", "Success", MessageBoxButton.OK);
-                    SelectedTileSet = ExistingTilesets.IndexOf(TilesetName);
-                    RaisePropertyChangedAll();
-
-                } else {
-                    MessageBox.Show($"The tileset couldn't be saved. There might be a tileset already named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
-                }
+            
+            if (TileSetService.Instance.AddTileSet(tileSet)) {
+                MessageBox.Show($"The new tileset '{tileSet.Name}' was saved successfully.", "Success", MessageBoxButton.OK);
+                SelectedTileSet = ExistingTilesets.IndexOf(tileSet.Name);
+                RaisePropertyChangedAll();
             }
-            
+            else {
+                MessageBox.Show($"The tileset couldn't be saved. There might be a tileset already named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
+            }
         }
 
-        private void RaisePropertyChangedAll () {
-            RaisePropertyChanged(nameof(ExistingTilesets));
-            RaisePropertyChanged(nameof(TileSet));
-            RaisePropertyChanged(nameof(SelectedTileSet));
-            RaisePropertyChanged(nameof(TilesetName));
-            RaisePropertyChanged(nameof(Dimension));
-            
+        #endregion
+
+
+        #region Private Methuds
+
+        private string CreateNewName (string oldName)
+        {
+            if (!char.IsNumber(oldName, oldName.Length - 1)) return $"{oldName} 0";
+            var i = int.Parse(oldName.Substring(oldName.Length-1));
+            return oldName.Substring(0, oldName.Length - 1) + (i+1);
         }
+
+        private void RaisePropertyChangedAll ()
+        {
+            GetType().GetProperties().ToList().ForEach(p => RaisePropertyChanged(p.Name));
+        }
+
+        #endregion
 
     }
 

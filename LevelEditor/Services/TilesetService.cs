@@ -19,16 +19,27 @@ namespace LevelEditor.Services {
             _subscriptions = new List<Action>();
         }
 
-        private bool HasUniqueName (string name) {
+        public bool NameExists (string name) {
             foreach (var tileSet in _tileSets.Values) {
-                if (tileSet.Name == name) return false;
+                if (tileSet.Name == name) return true;
             }
-            return true;
+            return false;
+        }
+
+        public bool Contains (Guid id) {
+            if (_tileSets.TryGetValue(id, out var tileSet))
+                return true;
+
+            return false;
+        }
+
+        public void RemoveTileSet (Guid id) {
+            _tileSets.Remove(id);
         }
 
         public bool AddTileSet(TileSet newTileSet)
         {
-            if (!HasUniqueName(newTileSet.Name)) return false;
+            if (NameExists(newTileSet.Name)) return false;
             _tileSets.Add(newTileSet.Id, newTileSet);
             _subscriptions.ForEach(s => s.Invoke());
             return true;
@@ -39,10 +50,6 @@ namespace LevelEditor.Services {
                 return tileSet;
 
             throw new ArgumentException($"No tileSet with id: {id}");
-        }
-
-        public TileSet GetTileSetByContentPath (string path) {
-            return _tileSets.Where((KeyValuePair<Guid, TileSet> pair) => pair.Value.ContentPath == path).FirstOrDefault().Value;
         }
 
         public TileSet[] GetAllTileSets () {

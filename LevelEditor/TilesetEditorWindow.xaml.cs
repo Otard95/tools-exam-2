@@ -61,20 +61,6 @@ namespace LevelEditor {
             }
         }
 
-        private void RenderTileMark(int dimension, TileCoordinate newMouseCoordinate)
-        {
-            if (_tileMark == null) return;
-            var tileMark = _tileMark;
-            tileMark.Height = dimension;
-            tileMark.Width = dimension;
-            Canvas.SetTop(tileMark, dimension * newMouseCoordinate.Y);
-            Canvas.SetLeft(tileMark, dimension * newMouseCoordinate.X);
-            if (CanvasElement.Children.Contains(_tileMark))
-                CanvasElement.Children.Remove(_tileMark);
-            CanvasElement.Children.Add(tileMark);
-
-        }
-
         private void RenderCursor(int dimension, TileCoordinate newMouseCoordinate)
         {
             _mark.Height = dimension;
@@ -99,6 +85,11 @@ namespace LevelEditor {
         }
 
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (TileSetIsNotLoaded()) {
+                ClearPreviousRender();
+                return;
+            }
+
             if (e.PropertyName != nameof(ViewModel.TileSet) && e.PropertyName != nameof(ViewModel.Dimension)) return;
 
             Render();

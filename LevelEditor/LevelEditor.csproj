@@ -103,7 +103,6 @@
     <Compile Include="Services\TileSetService.cs" />
     <Compile Include="ValueConverters\DimensionToInt.cs" />
     <Compile Include="ValueConverters\IntToDimension.cs" />
-    <Compile Include="ValueConverters\IsNullToBool.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Domain\SliceType.cs" />
