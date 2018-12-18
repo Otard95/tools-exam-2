@@ -19,10 +19,12 @@ namespace LevelEditor.Services {
             _subscriptions = new List<Action>();
         }
 
-        public void AddTileSet(TileSet newTileSet)
+        public bool AddTileSet(TileSet newTileSet)
         {
+            if (_tileSets.TryGetValue(newTileSet.Id, out var tileSet) && tileSet != null) return false;
             _tileSets.Add(newTileSet.Id, newTileSet);
             _subscriptions.ForEach(s => s.Invoke());
+            return true;
         }
 
         public TileSet GetTileSet (Guid id) {

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using LevelEditor.Domain;
+using System.Windows;
 
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : ViewModelBase
@@ -24,6 +25,7 @@ namespace LevelEditor.ViewModel {
         public RelayCommand SliceCommand { get; private set; }
 
         public Canvas Canvas { get; set; }
+
         #region UI property bindings
 
         public BitmapSource TileSetImageSource => BitmapService.Instance.GetBitmapSource(WorkingFile);
@@ -37,6 +39,8 @@ namespace LevelEditor.ViewModel {
                 SliceCommand.RaiseCanExecuteChanged();
             }
         }
+
+        public string TilesetName { get; set; }
 
         public string[] SliceModeChoices => Enum.GetNames(typeof(SliceType));
 
@@ -60,12 +64,13 @@ namespace LevelEditor.ViewModel {
         public TilesetEditorViewModel () {
             _sizeExp = 5;
             Dimension = 128;
+            TilesetName = "New Tileset";
 
             _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg};*.{FileExtension.Bmp}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
             SliceCommand =
-                new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0); //&&
+                new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0 && !string.IsNullOrEmpty(TilesetName)); //&&
             //TileSetImageSource.PixelHeight % Dimension == 0 &&
             //TileSetImageSource.Width % Dimension == 0);
 
@@ -95,7 +100,7 @@ namespace LevelEditor.ViewModel {
 
         public void SliceTileSet()
         {
-            var tileSet = new TileSet(Guid.Empty, "New TileSetImageSource", Dimension, WorkingFile);
+            var tileSet = new TileSet(Guid.Empty, TilesetName, Dimension, WorkingFile);
             var width = TileSetImageSource.PixelWidth;
             var height = TileSetImageSource.PixelHeight;
             var dimension = Dimension;
@@ -114,7 +119,11 @@ namespace LevelEditor.ViewModel {
                 }
             }
 
-            TileSetService.Instance.AddTileSet(tileSet);
+            if (TileSetService.Instance.AddTileSet(tileSet)) {
+                MessageBox.Show($"The new tileset '{TilesetName}' was saved successfully.", "Success", MessageBoxButton.OK);
+            } else {
+                MessageBox.Show($"The tileset couldn't be saved. There might be a tileset allready named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
+            }
         }
     }
 

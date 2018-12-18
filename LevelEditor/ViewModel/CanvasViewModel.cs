@@ -155,7 +155,7 @@ namespace LevelEditor.ViewModel
                     Map = map;
                     SavedFileName = fullFilePath;
                     SelectedTileSet = Map.TileSetMap.TileSets.FirstOrDefault();
-                    Map.TileSetMap.TileSets.ForEach(TileSetService.Instance.AddTileSet);
+                    Map.TileSetMap.TileSets.ForEach((TileSet t) => TileSetService.Instance.AddTileSet(t));
                     RaisePropertyChanged(nameof(TileSets));
                 })
             );
