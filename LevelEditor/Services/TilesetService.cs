@@ -19,9 +19,16 @@ namespace LevelEditor.Services {
             _subscriptions = new List<Action>();
         }
 
+        private bool HasUniqueName (string name) {
+            foreach (var tileSet in _tileSets.Values) {
+                if (tileSet.Name == name) return false;
+            }
+            return true;
+        }
+
         public bool AddTileSet(TileSet newTileSet)
         {
-            if (_tileSets.TryGetValue(newTileSet.Id, out var tileSet) && tileSet != null) return false;
+            if (!HasUniqueName(newTileSet.Name)) return false;
             _tileSets.Add(newTileSet.Id, newTileSet);
             _subscriptions.ForEach(s => s.Invoke());
             return true;
