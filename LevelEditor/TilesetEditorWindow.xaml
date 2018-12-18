@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LevelEditor.Views"
+      xmlns:domain="clr-namespace:LevelEditor.Domain"
       xmlns:ValueConverters="clr-namespace:LevelEditor.ValueConverters" x:Class="LevelEditor.TilesetEditorWindow"
       mc:Ignorable="d"
       Title="TileSetImageSource Editor" Width="1080" Height="900"
@@ -11,6 +12,7 @@
     >
 
     <Window.Resources>
+        <ValueConverters:IsNullToBool x:Key="IsNullToBool"/>
         <ValueConverters:IntToDimension x:Key="IntToDimension"/>
         <ValueConverters:DimensionToInt x:Key="DimensionToInt"/>
     </Window.Resources>
@@ -45,7 +47,10 @@
                 <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
             <ScrollViewer Grid.Column="0"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas  x:Name="CanvasElement" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="800"/>
+                <Canvas  x:Name="CanvasElement" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="800" 
+                         MouseDown="CanvasElement_MouseDown"
+                         Background="Black" 
+                         MouseMove="CanvasElement_MouseMove"/>
             </ScrollViewer>
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                 <Border BorderThickness="2 0 2 2" BorderBrush="#555">
@@ -53,26 +58,18 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="35"/>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="35"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="50"/>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="{Binding SelectedTileImage.Height}"/>
+                            <RowDefinition Height="35"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
-
-                        <Label Grid.Row="0" FontSize="18" Content="Properies"></Label>
+                        <Label Grid.Row="0" Content="Tools" FontSize="18" />
                         <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="4*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Margin="0,3,0,0" Content="Name:"></Label>
-                            <TextBox Grid.Column="1" Height="24" Text="{Binding TilesetName}" Padding="2"/>
-                        </Grid>
-                        <Label Grid.Row="2" Content="Tools" FontSize="18" />
-                        <Grid Grid.Row="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.5*"/>
                                 <ColumnDefinition Width="2*"/>
@@ -82,7 +79,7 @@
                             <Slider Grid.Column="1" Minimum="0" SmallChange="1" VerticalAlignment="Center" Value="{Binding Dimension, Converter={StaticResource DimensionToInt}}" Maximum="{Binding MaxDimension}"/>
                             <TextBlock TextWrapping="Wrap" Text="{Binding Dimension}" Width="52" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Grid>
-                        <Border Grid.Row="4" BorderThickness="5 10 10 10" Background="#999">
+                        <Border Grid.Row="2" BorderThickness="5 10 10 10" Background="#999">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -92,8 +89,8 @@
                                 <Button Grid.Column="1" Content="EraserTool" IsEnabled="False"/>
                             </Grid>
                         </Border>
-                        <Label Grid.Row="5" FontSize="18" Content="Select from existing"></Label>
-                        <Border Grid.Row="6" BorderThickness="5 10 10 10">
+                        <Label Grid.Row="3" FontSize="18" Content="Select from existing"></Label>
+                        <Border Grid.Row="4" BorderThickness="5 10 10 10">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -103,7 +100,30 @@
                                 <ComboBox Grid.Column="1" ItemsSource="{Binding ExistingTilesets}" SelectedIndex="{Binding SelectedTileSet}"/>
                             </Grid>
                         </Border>
-                        <Button Grid.Row="8" Content="Close" Margin="5,5,5,5" Click="CloseButton_Click" />
+                        <Label Grid.Row="5" FontSize="18" Content="Properties"></Label>
+                        <Grid Grid.Row="6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="22*"/>
+                                <ColumnDefinition Width="78*"/>
+                                <ColumnDefinition Width="197*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label VerticalAlignment="Center" Grid.Column="0" Content="TileSet Name:" Grid.ColumnSpan="2"></Label>
+                            <TextBox Grid.Column="2" Height="24" Margin="0,6,10,5" Text="{Binding TilesetName}" Padding="2"/>
+                        </Grid>
+                        <Image Grid.Row="7" Width="{Binding SelectedTileImage.Width}" Height="{Binding SelectedTileImage.Height}" Source="{Binding SelectedTileImage}"/>
+                        <Grid Grid.Row="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width=".8*"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Center" Content="Walkable:" Grid.ColumnSpan="2"></Label>
+                            <CheckBox Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding SelectedTileIsWalkable}" IsEnabled="{Binding SelectedTilePosition, Converter={StaticResource IsNullToBool}}"/>
+                            <Label Grid.Column="2" Margin="20,0,0,0" VerticalAlignment="Center" Content="Layer:" Grid.ColumnSpan="2"></Label>
+                            <ComboBox Grid.Column="3" Height="25" Margin="0, 0, 10, 0" IsEnabled="False" SelectedItem="{Binding SelectedTileLayer}" ItemsSource="{Binding Source={x:Static domain:LayerRules.AllowedLayers}}"/>
+                        </Grid>
+                        <Button Grid.Row="10" Content="Close" Margin="5,5,5,5" Click="CloseButton_Click" />
                     </Grid>
                 </Border>
             </ScrollViewer>

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using LevelEditor.ViewModel;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,16 +23,15 @@ namespace LevelEditor.Views
 
         public CanvasViewModel ViewModel => (CanvasViewModel) DataContext;
 
-        private readonly Rectangle _mark = new Rectangle
-        {
+        private readonly Rectangle _mark = new Rectangle {
             Fill = new SolidColorBrush(Color.FromArgb(0x22, 0xFF, 0xFF, 0xFF)),
             IsHitTestVisible = false
-        };
+        }; 
 
         private Image _tileMark;
 
         private readonly Rectangle _tileSetMark = new Rectangle {
-            Fill = new SolidColorBrush(Color.FromArgb(0x22, 0x00, 0x00, 0x00)),
+            Fill = new SolidColorBrush(Color.FromArgb(0x22, 0x00, 0x00, 0xFF)),
             IsHitTestVisible = false
         };
 
@@ -111,22 +111,17 @@ namespace LevelEditor.Views
             }
         }
 
-        private void CanvasElement_MouseMove(object sender, MouseEventArgs e) {
-
+        private void CanvasElement_MouseMove(object sender, MouseEventArgs e)
+        {
             var dimension = ViewModel.Map.Dimension;
-            var position = e.GetPosition(sender as Canvas);
-            var newMouseCoordinate = new TileCoordinate(
-                x: (int)(position.X / dimension),
-                y: (int)(position.Y / dimension),
-                tileSetMapId: 0,
-                tileId: 0
-            );
+            var newCoordinate = TileCursorService.UpdateCursorCoordinate(ViewModel.LastMouseCoordinate, dimension, e, (sender as Canvas));
 
-            if (!IsNewTileCoordinate(newMouseCoordinate, ViewModel.LastMouseCoordinate)) return;
-            ViewModel.LastMouseCoordinate = newMouseCoordinate;
-
-            Render();
-            RenderTileCursor(dimension, newMouseCoordinate);
+            if (TileCursorService.IsNewTileCoordinate(newCoordinate, ViewModel.LastMouseCoordinate))
+            {
+                ViewModel.LastMouseCoordinate = newCoordinate;
+                Render();
+                RenderTileCursor(dimension, newCoordinate);
+            }
         }
 
         private void RenderTileCursor(int dimension, TileCoordinate newMouseCoordinate) {

@@ -75,6 +75,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Domain\FileExtension.cs" />
+    <Compile Include="Domain\LayerRules.cs" />
     <Compile Include="Domain\MapToolState.cs" />
     <Compile Include="Domain\TileDimensionRules.cs" />
     <Compile Include="Domain\TileRules.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Models\TileMap.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Domain\Exceptions\FileServiceException.cs" />
+    <Compile Include="Services\TileCursorService.cs" />
     <Compile Include="Services\TileMapService.cs" />
     <Compile Include="Services\TileService.cs" />
     <Compile Include="Domain\TileType.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Services\TileSetService.cs" />
     <Compile Include="ValueConverters\DimensionToInt.cs" />
     <Compile Include="ValueConverters\IntToDimension.cs" />
+    <Compile Include="ValueConverters\IsNullToBool.cs" />
     <Compile Include="ViewModel\CanvasViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Domain\SliceType.cs" />

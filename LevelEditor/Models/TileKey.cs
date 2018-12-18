@@ -19,5 +19,7 @@ namespace LevelEditor.Models
         public Guid TileSetId;
         [JsonIgnore]
         public int Dimension { get; set; }
+
+        public int Layer { get; set; }
     }
 }

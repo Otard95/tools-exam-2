@@ -10,6 +10,8 @@ using GalaSoft.MvvmLight;
 using LevelEditor.Domain;
 using System.Windows;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
 
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : ViewModelBase
@@ -17,12 +19,14 @@ namespace LevelEditor.ViewModel {
         private TileSet _tileSet;
         private int _selectedTileSet;
         private readonly OpenFileDialog _fileDialog;
-        private SliceType _sliceType;
         private int _dimension;
+        private ImageSource _selectedTileImage;
+        private int _selectedTileId;
+        private TileCoordinate _selectedTilePosition;
 
-        public ICommand BrowseCommand { get; private set; }
-        public RelayCommand SliceCommand { get; private set; }
-
+        public ICommand BrowseCommand { get; }
+        public RelayCommand SliceCommand { get; }
+         
         #region UI property bindings
 
         public BitmapSource TileSetImageSource {
@@ -32,23 +36,19 @@ namespace LevelEditor.ViewModel {
             }
         }
 
+        public ImageSource SelectedTileImage
+        {
+            get => _selectedTileImage;
+            set => Set(ref _selectedTileImage, value);
+        }
+
         public string TilesetName {
-            get {
-                return TileSet != null ? TileSet.Name : "";
-            }
+            get => TileSet != null ? TileSet.Name : string.Empty;
             set {
                 if (TileSet != null) TileSet.Name = value;
                 RaisePropertyChanged(nameof(TilesetName));
                 SliceCommand?.RaiseCanExecuteChanged();
             }
-        }
-
-        public string[] SliceModeChoices => Enum.GetNames(typeof(SliceType));
-
-        public int SelectedSliceMode
-        {
-            get => (int) _sliceType;
-            set => _sliceType = (SliceType) value;
         }
 
         public int Dimension
@@ -61,6 +61,7 @@ namespace LevelEditor.ViewModel {
             }
         }
 
+        public bool CanEditTileProperties => SelectedTilePosition != null;
         public int MaxDimension => TileDimensionRules.NumOfDimensions-1;
 
         public TileSet TileSet {
@@ -68,17 +69,67 @@ namespace LevelEditor.ViewModel {
             private set {
                 Set(ref _tileSet, value);
                 Dimension = _tileSet.Dimension;
-                RaisePropertyChanged(nameof(TileSet));
                 RaisePropertyChanged(nameof(TilesetName));
             }
         }
-        public List<string> ExistingTilesets { get => TileSetListToNames(TileSetService.Instance.GetAllTileSets()); }
+        public List<string> ExistingTilesets => TileSetService.Instance.GetAllTileSets().Select(ts => ts.Name).ToList();
+
         public int SelectedTileSet {
             get => _selectedTileSet;
             set {
                 Set(ref _selectedTileSet, value);
                 if (value > -1) TileSet = TileSetService.Instance.GetAllTileSets()[_selectedTileSet];
                 RaisePropertyChanged(nameof(SelectedTileSet));
+            }
+        }
+
+        public bool SelectedTileIsWalkable {
+            get {
+                var value = TileSet?.TileKeys.FirstOrDefault(ts => ts.Id == SelectedTileId)?.Walkable ?? false;
+                return value;
+            }
+            set
+            {
+                var key = TileSet?.TileKeys.FirstOrDefault(ts => ts.Id == SelectedTileId);
+                if (key == null) return;
+                key.Walkable = value;
+                RaisePropertyChanged(nameof(SelectedTileIsWalkable));
+            }
+        }
+
+        public int SelectedTileLayer {
+            get {
+                return TileSet?.TileKeys.FirstOrDefault(ts => ts.Id == SelectedTileId)?.Layer ?? 0;
+            }
+            set {
+                var key = TileSet?.TileKeys.FirstOrDefault(ts => ts.Id == SelectedTileId);
+                if (key == null) return;
+                key.Layer = value;
+                RaisePropertyChanged(nameof(SelectedTileLayer));
+            }
+        }
+
+
+        public TileCoordinate LastMouseCoordinate { get; set; }
+
+        public TileCoordinate SelectedTilePosition
+        {
+            get => _selectedTilePosition;
+            set
+            {
+                Set(ref _selectedTilePosition, value);
+                RaisePropertyChanged(nameof(CanEditTileProperties));
+            }
+        }
+
+        public int SelectedTileId
+        {
+            get => _selectedTileId;
+            set
+            {
+                Set(ref _selectedTileId, value);
+                RaisePropertyChanged(nameof(SelectedTileIsWalkable));
+                RaisePropertyChanged(nameof(SelectedTileLayer));
             }
         }
 
@@ -95,25 +146,15 @@ namespace LevelEditor.ViewModel {
 
         }
 
-        private List<string> TileSetListToNames (TileSet[] tileSets) {
-            var output = new List<string>();
-            foreach (var tileset in tileSets) {
-                output.Add(tileset.Name);
-            }
-            return output;
-        }
-
         private void StartBrowse () {
             if (_fileDialog.ShowDialog() != true) return;
 
-            // Review: We should probably be more specific with the naming.
             var tilesetFromFile = BitmapService.Instance.GetBitmapSource(_fileDialog.FileName);
 
-            // Make sure image size is divisable by 2
-            var a = (tilesetFromFile.PixelHeight & ((1 << 2) - 1)) != 0;
-            var b = (tilesetFromFile.PixelWidth & ((1 << 2) - 1)) != 0;
-            if (a || b) {
-                MessageBox.Show($"The image you selected doesn't have the right dimentions", "Oops", MessageBoxButton.OK);
+            var heightIsDividableByTwo = IsDividableByTwo(tilesetFromFile.PixelHeight);
+            var widthIsDividableByTwo = IsDividableByTwo(tilesetFromFile.PixelWidth);
+            if (!heightIsDividableByTwo || !widthIsDividableByTwo) {
+                MessageBox.Show($"The image you selected doesn't have the right dimension", "Oops", MessageBoxButton.OK);
                 return;
             }
 
@@ -131,6 +172,11 @@ namespace LevelEditor.ViewModel {
 
         }
 
+        private bool IsDividableByTwo(int number)
+        {
+            return (number & ((1 << 2) - 1)) == 0;
+        }
+
         private bool CanSlice () {
             return TileSetImageSource != null && Dimension != 0 && !string.IsNullOrEmpty(TilesetName) &&
                    TileSetImageSource.PixelHeight % Dimension == 0 &&
@@ -143,8 +189,8 @@ namespace LevelEditor.ViewModel {
             TileSet.Dimension = Dimension;
             var width = TileSetImageSource.PixelWidth;
             var height = TileSetImageSource.PixelHeight;
-            var rowCount = (int) height / Dimension;
-            var columnCount = (int) width / Dimension;
+            var rowCount = height / Dimension;
+            var columnCount = width / Dimension;
 
             for (var row = 0; row < rowCount; row++)
             {
@@ -167,7 +213,7 @@ namespace LevelEditor.ViewModel {
                     RaisePropertyChangedAll();
 
                 } else {
-                    MessageBox.Show($"The tileset couldn't be saved. There might be a tileset allready named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
+                    MessageBox.Show($"The tileset couldn't be saved. There might be a tileset already named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
                 }
             }
             
