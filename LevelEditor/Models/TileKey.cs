@@ -11,6 +11,7 @@ namespace LevelEditor.Models
         public TileType Type { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public bool Walkable { get; set; }
 
         [JsonIgnore]
         public override string ContentPath { get; set; }

@@ -111,5 +111,10 @@ namespace LevelEditor.Models
         {
             return Name;
         }
+
+        internal void Clear () {
+            TileKeys.Clear();
+            TileIdCount = 0;
+        }
     }
 }

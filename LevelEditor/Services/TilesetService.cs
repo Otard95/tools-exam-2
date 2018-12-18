@@ -41,6 +41,10 @@ namespace LevelEditor.Services {
             throw new ArgumentException($"No tileSet with id: {id}");
         }
 
+        public TileSet GetTileSetByContentPath (string path) {
+            return _tileSets.Where((KeyValuePair<Guid, TileSet> pair) => pair.Value.ContentPath == path).FirstOrDefault().Value;
+        }
+
         public TileSet[] GetAllTileSets () {
             return _tileSets.Values.ToArray();
         }

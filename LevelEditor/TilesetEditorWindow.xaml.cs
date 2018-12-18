@@ -19,13 +19,12 @@ namespace LevelEditor {
 
         public TilesetEditorWindow () {
             InitializeComponent();
-            ViewModel.Canvas = CanvasElement;
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         protected override void OnActivated (EventArgs e) {
             base.OnActivated(e);
-            ViewModel_PropertyChanged(null, null);
+            ViewModel_PropertyChanged(ViewModel, new System.ComponentModel.PropertyChangedEventArgs(nameof(ViewModel.TileSet)));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -35,6 +34,7 @@ namespace LevelEditor {
         private void ViewModel_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 
             if (TileSetIsNotLoaded()) return;
+            if (e.PropertyName != nameof(ViewModel.TileSet) && e.PropertyName != nameof(ViewModel.Dimension)) return;
 
             ClearPreviousRender();
 
@@ -101,7 +101,7 @@ namespace LevelEditor {
         }
 
         private bool TileSetIsNotLoaded() {
-            return string.IsNullOrEmpty(ViewModel.WorkingFile);
+            return ViewModel.TileSetImageSource == null;
         }
 
         private void CloseButton_Click (object sender, RoutedEventArgs e) {

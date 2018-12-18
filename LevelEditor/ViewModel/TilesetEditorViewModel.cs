@@ -9,38 +9,39 @@ using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using LevelEditor.Domain;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace LevelEditor.ViewModel {
     public class TilesetEditorViewModel : ViewModelBase
     {
-        private readonly TileSet _tileSet;
+        private TileSet _tileSet;
+        private int _selectedTileSet;
         private readonly OpenFileDialog _fileDialog;
         private SliceType _sliceType;
-        private string _workingFile;
-        private string PrevWorkingFile { get; set; }
-        private int _sizeExp;
         private int _dimension;
 
         public ICommand BrowseCommand { get; private set; }
         public RelayCommand SliceCommand { get; private set; }
 
-        public Canvas Canvas { get; set; }
-
         #region UI property bindings
 
-        public BitmapSource TileSetImageSource => BitmapService.Instance.GetBitmapSource(WorkingFile);
-
-        public string WorkingFile {
-            get => _workingFile;
-            private set
-            {
-                Set(ref _workingFile, value);
-                RaisePropertyChanged(nameof(TileSetImageSource));
-                SliceCommand.RaiseCanExecuteChanged();
+        public BitmapSource TileSetImageSource {
+            get {
+                if (TileSet == null) return null;
+                return BitmapService.Instance.GetBitmapSource(TileSet.ContentPath);
             }
         }
 
-        public string TilesetName { get; set; }
+        public string TilesetName {
+            get {
+                return TileSet != null ? TileSet.Name : "";
+            }
+            set {
+                if (TileSet != null) TileSet.Name = value;
+                RaisePropertyChanged(nameof(TilesetName));
+                SliceCommand?.RaiseCanExecuteChanged();
+            }
+        }
 
         public string[] SliceModeChoices => Enum.GetNames(typeof(SliceType));
 
@@ -53,65 +54,103 @@ namespace LevelEditor.ViewModel {
         public int Dimension
         {
             get => _dimension;
-            set => Set(ref _dimension, value);
+            set {
+                Set(ref _dimension, value);
+                RaisePropertyChanged(nameof(Dimension));
+                SliceCommand?.RaiseCanExecuteChanged();
+            }
         }
 
         public int MaxDimension => TileDimensionRules.NumOfDimensions-1;
-        public TileSet TileSet { get; private set; }
+
+        public TileSet TileSet {
+            get => _tileSet;
+            private set {
+                Set(ref _tileSet, value);
+                Dimension = _tileSet.Dimension;
+                RaisePropertyChanged(nameof(TileSet));
+                RaisePropertyChanged(nameof(TilesetName));
+            }
+        }
+        public List<string> ExistingTilesets { get => TileSetListToNames(TileSetService.Instance.GetAllTileSets()); }
+        public int SelectedTileSet {
+            get => _selectedTileSet;
+            set {
+                Set(ref _selectedTileSet, value);
+                if (value > -1) TileSet = TileSetService.Instance.GetAllTileSets()[_selectedTileSet];
+                RaisePropertyChanged(nameof(SelectedTileSet));
+            }
+        }
 
         #endregion
 
         public TilesetEditorViewModel () {
-            _sizeExp = 5;
             Dimension = 128;
-            TilesetName = "New Tileset";
 
             _fileDialog = new OpenFileDialog {Filter = $"Image File|*.{FileExtension.Png};*.{FileExtension.Jpg};*.{FileExtension.Bmp}"};
 
             BrowseCommand = new RelayCommand(StartBrowse);
             SliceCommand =
-                new RelayCommand(SliceTileSet, canExecute: () => TileSetImageSource != null && Dimension != 0 && !string.IsNullOrEmpty(TilesetName)); //&&
-            //TileSetImageSource.PixelHeight % Dimension == 0 &&
-            //TileSetImageSource.Width % Dimension == 0);
+                new RelayCommand(SliceTileSet, CanSlice);
 
+        }
+
+        private List<string> TileSetListToNames (TileSet[] tileSets) {
+            var output = new List<string>();
+            foreach (var tileset in tileSets) {
+                output.Add(tileset.Name);
+            }
+            return output;
         }
 
         private void StartBrowse () {
             if (_fileDialog.ShowDialog() != true) return;
-            WorkingFile = _fileDialog.FileName;
-        }
-
-        private void UpdateImageSource () {
 
             // Review: We should probably be more specific with the naming.
-            var tilesetFromFile = BitmapService.Instance.GetBitmapSource(WorkingFile);
-            var nx = Math.Log(tilesetFromFile.PixelHeight, 2);
-            var hd = (int)nx;
-            var ny = Math.Log(tilesetFromFile.PixelWidth, 2);
-            var wd = (int)ny;
+            var tilesetFromFile = BitmapService.Instance.GetBitmapSource(_fileDialog.FileName);
 
-            if (hd != nx || wd != ny) {
-                WorkingFile = PrevWorkingFile;
+            // Make sure image size is divisable by 2
+            var a = (tilesetFromFile.PixelHeight & ((1 << 2) - 1)) != 0;
+            var b = (tilesetFromFile.PixelWidth & ((1 << 2) - 1)) != 0;
+            if (a || b) {
+                MessageBox.Show($"The image you selected doesn't have the right dimentions", "Oops", MessageBoxButton.OK);
                 return;
             }
 
-            PrevWorkingFile = WorkingFile;
+            var tileSet = TileSetService.Instance.GetTileSetByContentPath(_fileDialog.FileName);
+            if (tileSet == null) {
+                _tileSet = new TileSet(Guid.Empty, "New Tileset", Dimension, _fileDialog.FileName);
+                _selectedTileSet = -1;
+            } else {
+                _dimension = TileSet.Dimension;
+                _selectedTileSet = ExistingTilesets.IndexOf(TileSet.Name);
+                _tileSet = tileSet;
+            }
+
+            RaisePropertyChangedAll();
+
+        }
+
+        private bool CanSlice () {
+            return TileSetImageSource != null && Dimension != 0 && !string.IsNullOrEmpty(TilesetName) &&
+                   TileSetImageSource.PixelHeight % Dimension == 0 &&
+                   TileSetImageSource.PixelWidth % Dimension == 0;
         }
 
         public void SliceTileSet()
         {
-            var tileSet = new TileSet(Guid.Empty, TilesetName, Dimension, WorkingFile);
+            TileSet.Clear();
+            TileSet.Dimension = Dimension;
             var width = TileSetImageSource.PixelWidth;
             var height = TileSetImageSource.PixelHeight;
-            var dimension = Dimension;
-            var rowCount = (int) height / dimension;
-            var columnCount = (int) width / dimension;
+            var rowCount = (int) height / Dimension;
+            var columnCount = (int) width / Dimension;
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var column = 0; column < columnCount; column++)
                 {
-                    tileSet.AddTile(new TileKey
+                    TileSet.AddTile(new TileKey
                     {
                         X = column,
                         Y = row
@@ -119,12 +158,30 @@ namespace LevelEditor.ViewModel {
                 }
             }
 
-            if (TileSetService.Instance.AddTileSet(tileSet)) {
-                MessageBox.Show($"The new tileset '{TilesetName}' was saved successfully.", "Success", MessageBoxButton.OK);
-            } else {
-                MessageBox.Show($"The tileset couldn't be saved. There might be a tileset allready named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
+            try {
+                TileSetService.Instance.GetTileSet(TileSet.Id);
+            } catch (Exception e) {
+                if (TileSetService.Instance.AddTileSet(TileSet)) {
+                    MessageBox.Show($"The new tileset '{TilesetName}' was saved successfully.", "Success", MessageBoxButton.OK);
+                    SelectedTileSet = ExistingTilesets.IndexOf(TilesetName);
+                    RaisePropertyChangedAll();
+
+                } else {
+                    MessageBox.Show($"The tileset couldn't be saved. There might be a tileset allready named '{TilesetName}'.", "Oops", MessageBoxButton.OK);
+                }
             }
+            
         }
+
+        private void RaisePropertyChangedAll () {
+            RaisePropertyChanged(nameof(ExistingTilesets));
+            RaisePropertyChanged(nameof(TileSet));
+            RaisePropertyChanged(nameof(SelectedTileSet));
+            RaisePropertyChanged(nameof(TilesetName));
+            RaisePropertyChanged(nameof(Dimension));
+            
+        }
+
     }
 
 }
